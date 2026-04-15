@@ -1,0 +1,27 @@
+Page background       → bg-[--bg-page]      or  bg-[#F8FAFC]
+Card / modal          → bg-[--bg-card]      or  bg-white dark:bg-[#1E293B]
+Sidebar / navbar      → bg-[--bg-sidebar]
+Input field           → bg-[--bg-input]
+
+Primary button        → bg-primary hover:bg-primary-hover text-white
+Active nav link       → bg-primary-light text-primary
+Selected chip         → bg-primary-light border-primary text-primary
+Unselected chip       → bg-[--bg-input] border-[--border] text-[--text-muted]
+
+Overdue badge         → bg-red-100 text-red-800       (light)
+                        dark:bg-red-900 dark:text-red-200
+Upcoming badge        → bg-amber-100 text-amber-800
+Later badge           → bg-emerald-100 text-emerald-800
+Completed badge       → bg-slate-100 text-slate-500
+
+Reminder badge        → bg-purple-light text-purple
+Notification bell     → text-purple
+Unread notif bg       → bg-purple-light dark:bg-purple/20
+
+Body text             → text-[--text]
+Label / desc text     → text-[--text-secondary]
+Metadata / date       → text-[--text-muted]
+Placeholder           → placeholder:text-[--text-placeholder]
+
+Card border           → border border-[--border]
+Divider line          → border-b border-[--border]

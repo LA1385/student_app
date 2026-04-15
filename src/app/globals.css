@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+    --color-primary: #2563EB;
+    --color-primary-hover: #1D4ED8;
+    --color-primary-light: #EFF6FF;
+    --color-secondary: #38BDF8;
+
+    --color-urgent: #EF4444;
+    --color-upcoming: #F59E0B;
+    --color-later: #10B981;
+    --color-done: #94A3B8;
+
+    --color-purple: #8B5CF6;
+    --color-purple-light: #EDE9FE;
+
+    /* A touch darker grey for clean contrast */
+    --color-bg-page: #F1F5F9; 
+    --color-bg-card: #FFFFFF;
+    --color-bg-sidebar: #F1F5F9;
+    --color-bg-input: #E2E8F0;
+
+    --color-border: #E2E8F0;
+    --color-border-strong: #CBD5E1;
+
+    --color-text: #0F172A;
+    --color-text-secondary: #475569;
+    --color-text-muted: #64748B;
+    --color-text-placeholder: #94A3B8;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+.dark {
+    --color-bg-page: #0B0F19; /* very dark blue/black */
+    --color-bg-card: #151C2C; /* elevated dark */
+    --color-bg-sidebar: #0F1523;
+    --color-bg-input: #1E293B;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+    --color-border: #1E293B;
+    --color-border-strong: #334155;
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    --color-text: #F8FAFC;
+    --color-text-secondary: #94A3B8;
+    --color-text-muted: #64748B;
+    --color-text-placeholder: #475569;
 }
