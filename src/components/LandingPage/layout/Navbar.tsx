@@ -1,4 +1,5 @@
 import Link from "next/link";
+import SignInBtn from "../ui/SignInBtn";
 import ThemeToggle from "../ui/ThemeToggle";
 import Logo from "@/assets/logo.png";
 
@@ -20,10 +21,8 @@ export default function Navbar() {
 
                 {/* Features & Sign in */}
                 <div className="flex items-center gap-x-6">
-                    {/* The design has Features and Testimonials but user text didn't explicitly request to add them here, keeping standard SignIn button for now, but padded beautifully. */}
-                    <button className="bg-primary hover:bg-primary-hover text-white rounded-xl px-6 py-2.5 font-semibold transition-all shadow-sm shadow-primary/25 hover:shadow-primary/40 text-sm">
-                        Sign In
-                    </button>
+                     
+                    <SignInBtn text="Sign in"/>
 
                     <div className="h-6 w-px bg-[--border] mx-1 hidden sm:block"></div>
 

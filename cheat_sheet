@@ -25,3 +25,6 @@ Placeholder           → placeholder:text-[--text-placeholder]
 
 Card border           → border border-[--border]
 Divider line          → border-b border-[--border]
+
+
+npx prisma studio

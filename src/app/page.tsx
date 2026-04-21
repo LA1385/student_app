@@ -1,7 +1,12 @@
 import Card from "@/components/LandingPage/ui/Card";
 import Icon from "@/components/LandingPage/ui/Icon";
+import SignInBtn from "@/components/LandingPage/ui/SignInBtn";
+import {auth} from "@/app/Auth";
 
-export default function Home() {
+
+export default async function Home() {
+    const session = await auth();
+    console.log("Session:", session); // Debugging line to check session data
 
     const FeaturesData = [
         {
@@ -40,14 +45,11 @@ export default function Home() {
                             <span className="text-primary tracking-tight">Deadline Again.</span>
                         </h1>
                         <p className="text-lg md:text-xl text-[--text-secondary] leading-relaxed font-medium">
-                            Your smart academic companion — track assignments, exams and tasks, events, get reminded automatically, and access every tool you need. Built for students, by a student.
+                            Your smart academic companion — track assignments, exams, tasks and events, get reminded automatically, and access every tool you need. Built for students, by a student.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto mt-2">
-                            <button className="w-full sm:w-auto bg-primary hover:bg-primary-hover text-white font-semibold rounded-xl px-8 py-3.5 transition-all shadow-sm shadow-primary/25 hover:shadow-primary/40 flex items-center justify-center gap-2">
-                                <Icon name="Bell" className="w-5 h-5 hidden" /> 
-                                Sign in with Google
-                            </button>
+                           <SignInBtn text="Sign in with Google"/>
                         </div>
                     </div>
 
@@ -89,6 +91,14 @@ export default function Home() {
                         {FeaturesData.map((feature, index) => (
                             <Card key={index} icon={feature.icon} title={feature.title} description={feature.description} />
                         ))}
+                    </div>
+
+                    <div>
+                        {session? (
+                            <p>Logged in as: {session.user?.email}</p>
+                        ) : (
+                            <p>Please sign in to view your profile.</p>
+                        )}
                     </div>
                 </div>
             </div>
