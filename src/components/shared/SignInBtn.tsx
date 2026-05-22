@@ -1,4 +1,4 @@
-import { signIn } from "@/app/Auth";
+import { signIn } from "@/lib/auth";
 
 export default function SignIn({text}: {text: string}) {
     return (
@@ -13,4 +13,4 @@ export default function SignIn({text}: {text: string}) {
             </button>
         </form>
     )
-} 
+}

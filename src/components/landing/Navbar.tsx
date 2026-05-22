@@ -1,8 +1,6 @@
 import Link from "next/link";
-import SignInBtn from "../ui/SignInBtn";
-import ThemeToggle from "../ui/ThemeToggle";
-import Logo from "@/assets/logo.png";
-
+import SignInBtn from "@/components/shared/SignInBtn";
+import ThemeToggle from "@/components/shared/ThemeToggle";
 
 export default function Navbar() {
     return (
@@ -11,8 +9,7 @@ export default function Navbar() {
                 {/* App logo & name */}
                 <Link href="/" className="flex flex-row items-center gap-x-2.5 group">
                     <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold group-hover:bg-primary-hover transition-colors shadow-sm shadow-primary/20">
-                        {/* Placeholder for real logo img */}
-                        <img src={Logo.src} alt="Logo" className="w-full h-full object-contain" />  
+                        <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
                     </div>
                     <div className="text-[1.35rem] font-extrabold tracking-tight text-[--text]">   
                         Student App
@@ -21,11 +18,8 @@ export default function Navbar() {
 
                 {/* Features & Sign in */}
                 <div className="flex items-center gap-x-6">
-                     
                     <SignInBtn text="Sign in"/>
-
                     <div className="h-6 w-px bg-[--border] mx-1 hidden sm:block"></div>
-
                     <ThemeToggle />
                 </div>
             </div>

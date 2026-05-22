@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/LandingPage/layout/Navbar";
-import Footer from "@/components/LandingPage/layout/Footer";
-import ThemeProviderComponent from "@/components/LandingPage/layout/ThemeProvider";
+import ThemeProviderComponent from "@/components/providers/ThemeProvider";
 import "./globals.css";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "Student App",
@@ -16,14 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className="min-h-full flex flex-col">
         <ThemeProviderComponent attribute="class" defaultTheme="system" enableSystem>
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
+          {children}
         </ThemeProviderComponent>
       </body>
     </html>

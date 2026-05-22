@@ -1,4 +1,4 @@
-import Icon from "@/components/LandingPage/ui/Icon";
+import Icon from "@/components/shared/Icon";
 
 type cardProps = {
     icon: string;

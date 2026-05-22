@@ -1,12 +1,10 @@
-import Card from "@/components/LandingPage/ui/Card";
-import Icon from "@/components/LandingPage/ui/Icon";
-import SignInBtn from "@/components/LandingPage/ui/SignInBtn";
-import {auth} from "@/app/Auth";
+import Card from "@/components/landing/Card";
+import SignInBtn from "@/components/shared/SignInBtn";
+import { auth } from "@/lib/auth";
 
 
 export default async function Home() {
     const session = await auth();
-    console.log("Session:", session); // Debugging line to check session data
 
     const FeaturesData = [
         {
