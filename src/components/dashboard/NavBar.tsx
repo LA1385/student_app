@@ -11,7 +11,7 @@ export default function NavBar() {
                     <img src="/logo.png" alt="Logo" />
                 </div>
                 <div>
-                    Student App
+                    Scholarly
                 </div>
             </div>
 

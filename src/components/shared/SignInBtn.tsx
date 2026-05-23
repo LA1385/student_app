@@ -8,7 +8,7 @@ export default function SignIn({text}: {text: string}) {
                 await signIn("google")
             }}
         >
-            <button className="bg-primary hover:bg-primary-hover text-white rounded-xl px-6 py-2.5 font-semibold transition-all shadow-sm shadow-primary/25 hover:shadow-primary/40 text-sm">
+            <button className="bg-primary hover:bg-primary-hover text-white rounded-xl px-4 py-2.5 font-semibold transition-all shadow-sm shadow-primary/25 hover:shadow-primary/40 text-sm hover:cursor-pointer">
                 {text}
             </button>
         </form>

@@ -2,7 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:is(.dark, .dark *));
 
 @theme {
     --color-primary: #2563EB;
@@ -97,16 +97,17 @@
     --color-chart-1: var(--chart-1);
     --color-ring: var(--ring);
     --color-input: var(--input);
-    --color-border: var(--border);
+    /* Note: --color-border is defined in @theme above for our custom tokens; 
+       do not re-map it here to the shadcn --border variable */
     --color-destructive: var(--destructive);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
     --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
+    /* --color-secondary-foreground and --color-secondary are defined in @theme above;
+       removing shadcn remaps here so the custom #38BDF8 token is not overridden. */
+    /* --color-primary-foreground and --color-primary are defined in @theme above;
+       removing shadcn remaps here so the custom #2563EB blue is not overridden. */
     --color-popover-foreground: var(--popover-foreground);
     --color-popover: var(--popover);
     --color-card-foreground: var(--card-foreground);
@@ -160,11 +161,12 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
-    @apply bg-background text-foreground;
-    }
+    /* Use our custom page background so dark mode bg-bg-page works correctly */
+    @apply bg-bg-page text-text;
+  }
   html {
     @apply font-sans;
-    }
+  }
 }
