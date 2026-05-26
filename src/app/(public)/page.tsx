@@ -1,10 +1,14 @@
 import Card from "@/components/landing/Card";
 import SignInBtn from "@/components/shared/SignInBtn";
 import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 
 export default async function Home() {
     const session = await auth();
+    if (session) {
+        redirect("/dashboard");
+    }
 
     const FeaturesData = [
         {
@@ -89,14 +93,6 @@ export default async function Home() {
                         {FeaturesData.map((feature, index) => (
                             <Card key={index} icon={feature.icon} title={feature.title} description={feature.description} />
                         ))}
-                    </div>
-
-                    <div>
-                        {session? (
-                            <p>Logged in as: {session.user?.email}</p>
-                        ) : (
-                            <p>Please sign in to view your profile.</p>
-                        )}
                     </div>
                 </div>
             </div>

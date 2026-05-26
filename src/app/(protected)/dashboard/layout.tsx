@@ -6,19 +6,14 @@ export default function ProtectedLayout({
     children}: {
     children: React.ReactNode}) {
         return (
-            <div>
-                <aside>
-                    <SideBar />
-                </aside>
-                <div className="flex flex-col">
-                    <NavBar />
-                    <main className="p-4">
-                        {children}
-                    </main>
-                </div>
-                <nav>
-                    <BottomNav />
-                </nav>
+            <div className="min-h-screen bg-bg-page text-text">
+                <NavBar />
+                <SideBar />
+                <main>
+                    {children}
+                </main>
+                <BottomNav />
             </div>
         )
 }
+

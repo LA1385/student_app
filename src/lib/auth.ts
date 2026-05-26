@@ -10,8 +10,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         signIn: "/",
     },
     callbacks: {
-        authorized: async ({ auth }) => {
-            return !!auth;
+        authorized: async ({ auth, request }) => {
+            const isLoggedIn = Boolean(auth);
+            const isOnRoot = request.nextUrl.pathname === "/";
+
+            if (isLoggedIn && isOnRoot) {
+                return Response.redirect(
+                    new URL("/dashboard", request.nextUrl)
+                );
+            }
+
+            return isLoggedIn;
         },
         session({ session, user }) {
             session.user.id = user.id;

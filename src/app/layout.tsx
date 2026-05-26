@@ -3,6 +3,7 @@ import ThemeProviderComponent from "@/components/providers/ThemeProvider";
 import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import AuthProvider from "@/components/providers/AuthProvider";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -20,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className="min-h-full flex flex-col">
-        <ThemeProviderComponent attribute="class" defaultTheme="system" enableSystem>
-          {children}
-        </ThemeProviderComponent>
+        <AuthProvider>
+          <ThemeProviderComponent attribute="class" defaultTheme="system" enableSystem>
+            {children}
+          </ThemeProviderComponent>
+        </AuthProvider>
       </body>
     </html>
   );

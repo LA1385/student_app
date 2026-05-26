@@ -1,29 +1,31 @@
 "use client"
 
-import Icon from "@/components/shared/Icon"
+import { SquareArrowOutUpRight } from "lucide-react";
 
-export default function ToolCard({ name, icon, href }: { name: string, icon: string, href: string }) {
-    
-    const Tools = [
-        { icon: 'calculator', name: 'Calculator', href: '/tools/calculator' },
-        { icon: 'converter', name: 'Converter', href: '/tools/converter' },
-        { icon: 'file-Compression', name: 'File Compression', href: '/tools/file-compression' },
-        { icon: 'Zip', name: 'Zip', href: '/tools/zip' },
-    ]
-
+export default function ToolCard({ name, icon, href, description }: {
+    name: string
+    icon: React.ReactNode
+    href: string
+    description?: string
+}) {
     return (
-        <div>
-            {Tools.map((tool, index) => (
-                <a 
-                    key={index}
-                    href={tool.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    <Icon name={tool.icon} />
-                    <h3>{tool.name}</h3>
-                </a>
-            ))}
+        <div className="relative bg-bg-card border border-border rounded-xl hover:border-border-strong hover:shadow-sm transition-all duration-150">
+            <a 
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block p-4"
+            >
+                <div className="w-12 h-12 rounded-xl bg-primary-light flex items-center justify-center mb-3">
+                    {icon}
+                </div>
+                <h3 className="text-sm font-semibold text-text mb-1">{name}</h3>
+                {description && (
+                    <p className="text-xs text-text-muted line-clamp-2">{description}</p>
+                )}
+                <SquareArrowOutUpRight className="absolute top-3 right-3 w-3.5 h-3.5 text-text-muted" />
+            </a>
         </div>
     )
 }
+
