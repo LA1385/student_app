@@ -36,7 +36,10 @@ export default function TaskCard({ title, type, dueDate, priority, category }: {
             <div className="flex items-center gap-3 mt-0.5">
                 <div className="text-xs text-text-muted flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-text-muted" />
-                    <span>{dueDate}</span>
+                    <span>{new Date(dueDate).toLocaleDateString(
+                        'en-US',
+                        { month: 'short', day: 'numeric' }
+                    )}</span>
                 </div>
                 {category && (
                     <div className="text-xs text-text-muted flex items-center gap-1">
