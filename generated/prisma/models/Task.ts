@@ -34,6 +34,7 @@ export type TaskMinAggregateOutputType = {
   priority: string | null
   status: string | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type TaskMaxAggregateOutputType = {
@@ -46,6 +47,7 @@ export type TaskMaxAggregateOutputType = {
   priority: string | null
   status: string | null
   createdAt: Date | null
+  updatedAt: Date | null
 }
 
 export type TaskCountAggregateOutputType = {
@@ -58,6 +60,7 @@ export type TaskCountAggregateOutputType = {
   priority: number
   status: number
   createdAt: number
+  updatedAt: number
   _all: number
 }
 
@@ -72,6 +75,7 @@ export type TaskMinAggregateInputType = {
   priority?: true
   status?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type TaskMaxAggregateInputType = {
@@ -84,6 +88,7 @@ export type TaskMaxAggregateInputType = {
   priority?: true
   status?: true
   createdAt?: true
+  updatedAt?: true
 }
 
 export type TaskCountAggregateInputType = {
@@ -96,6 +101,7 @@ export type TaskCountAggregateInputType = {
   priority?: true
   status?: true
   createdAt?: true
+  updatedAt?: true
   _all?: true
 }
 
@@ -181,6 +187,7 @@ export type TaskGroupByOutputType = {
   priority: string
   status: string
   createdAt: Date
+  updatedAt: Date
   _count: TaskCountAggregateOutputType | null
   _min: TaskMinAggregateOutputType | null
   _max: TaskMaxAggregateOutputType | null
@@ -214,6 +221,7 @@ export type TaskWhereInput = {
   priority?: Prisma.StringFilter<"Task"> | string
   status?: Prisma.StringFilter<"Task"> | string
   createdAt?: Prisma.DateTimeFilter<"Task"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   reminders?: Prisma.ReminderListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
@@ -229,6 +237,7 @@ export type TaskOrderByWithRelationInput = {
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   reminders?: Prisma.ReminderOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
@@ -247,6 +256,7 @@ export type TaskWhereUniqueInput = Prisma.AtLeast<{
   priority?: Prisma.StringFilter<"Task"> | string
   status?: Prisma.StringFilter<"Task"> | string
   createdAt?: Prisma.DateTimeFilter<"Task"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   reminders?: Prisma.ReminderListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
@@ -262,6 +272,7 @@ export type TaskOrderByWithAggregationInput = {
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
   _count?: Prisma.TaskCountOrderByAggregateInput
   _max?: Prisma.TaskMaxOrderByAggregateInput
   _min?: Prisma.TaskMinOrderByAggregateInput
@@ -280,6 +291,7 @@ export type TaskScalarWhereWithAggregatesInput = {
   priority?: Prisma.StringWithAggregatesFilter<"Task"> | string
   status?: Prisma.StringWithAggregatesFilter<"Task"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Task"> | Date | string
+  updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Task"> | Date | string
 }
 
 export type TaskCreateInput = {
@@ -291,6 +303,7 @@ export type TaskCreateInput = {
   priority?: string
   status?: string
   createdAt?: Date | string
+  updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTasksInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutTaskInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTaskInput
@@ -306,6 +319,7 @@ export type TaskUncheckedCreateInput = {
   priority?: string
   status?: string
   createdAt?: Date | string
+  updatedAt?: Date | string
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutTaskInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTaskInput
 }
@@ -319,6 +333,7 @@ export type TaskUpdateInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTasksNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutTaskNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTaskNestedInput
@@ -334,6 +349,7 @@ export type TaskUncheckedUpdateInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutTaskNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTaskNestedInput
 }
@@ -348,6 +364,7 @@ export type TaskCreateManyInput = {
   priority?: string
   status?: string
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type TaskUpdateManyMutationInput = {
@@ -359,6 +376,7 @@ export type TaskUpdateManyMutationInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TaskUncheckedUpdateManyInput = {
@@ -371,6 +389,7 @@ export type TaskUncheckedUpdateManyInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type TaskListRelationFilter = {
@@ -393,6 +412,7 @@ export type TaskCountOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type TaskMaxOrderByAggregateInput = {
@@ -405,6 +425,7 @@ export type TaskMaxOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type TaskMinOrderByAggregateInput = {
@@ -417,6 +438,7 @@ export type TaskMinOrderByAggregateInput = {
   priority?: Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type TaskScalarRelationFilter = {
@@ -503,6 +525,7 @@ export type TaskCreateWithoutUserInput = {
   priority?: string
   status?: string
   createdAt?: Date | string
+  updatedAt?: Date | string
   reminders?: Prisma.ReminderCreateNestedManyWithoutTaskInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTaskInput
 }
@@ -516,6 +539,7 @@ export type TaskUncheckedCreateWithoutUserInput = {
   priority?: string
   status?: string
   createdAt?: Date | string
+  updatedAt?: Date | string
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutTaskInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTaskInput
 }
@@ -558,6 +582,7 @@ export type TaskScalarWhereInput = {
   priority?: Prisma.StringFilter<"Task"> | string
   status?: Prisma.StringFilter<"Task"> | string
   createdAt?: Prisma.DateTimeFilter<"Task"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Task"> | Date | string
 }
 
 export type TaskCreateWithoutRemindersInput = {
@@ -569,6 +594,7 @@ export type TaskCreateWithoutRemindersInput = {
   priority?: string
   status?: string
   createdAt?: Date | string
+  updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTasksInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTaskInput
 }
@@ -583,6 +609,7 @@ export type TaskUncheckedCreateWithoutRemindersInput = {
   priority?: string
   status?: string
   createdAt?: Date | string
+  updatedAt?: Date | string
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTaskInput
 }
 
@@ -611,6 +638,7 @@ export type TaskUpdateWithoutRemindersInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTasksNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTaskNestedInput
 }
@@ -625,6 +653,7 @@ export type TaskUncheckedUpdateWithoutRemindersInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTaskNestedInput
 }
 
@@ -637,6 +666,7 @@ export type TaskCreateWithoutNotificationsInput = {
   priority?: string
   status?: string
   createdAt?: Date | string
+  updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutTasksInput
   reminders?: Prisma.ReminderCreateNestedManyWithoutTaskInput
 }
@@ -651,6 +681,7 @@ export type TaskUncheckedCreateWithoutNotificationsInput = {
   priority?: string
   status?: string
   createdAt?: Date | string
+  updatedAt?: Date | string
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutTaskInput
 }
 
@@ -679,6 +710,7 @@ export type TaskUpdateWithoutNotificationsInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutTasksNestedInput
   reminders?: Prisma.ReminderUpdateManyWithoutTaskNestedInput
 }
@@ -693,6 +725,7 @@ export type TaskUncheckedUpdateWithoutNotificationsInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutTaskNestedInput
 }
 
@@ -705,6 +738,7 @@ export type TaskCreateManyUserInput = {
   priority?: string
   status?: string
   createdAt?: Date | string
+  updatedAt?: Date | string
 }
 
 export type TaskUpdateWithoutUserInput = {
@@ -716,6 +750,7 @@ export type TaskUpdateWithoutUserInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminders?: Prisma.ReminderUpdateManyWithoutTaskNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTaskNestedInput
 }
@@ -729,6 +764,7 @@ export type TaskUncheckedUpdateWithoutUserInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutTaskNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTaskNestedInput
 }
@@ -742,6 +778,7 @@ export type TaskUncheckedUpdateManyWithoutUserInput = {
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -794,6 +831,7 @@ export type TaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   priority?: boolean
   status?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reminders?: boolean | Prisma.Task$remindersArgs<ExtArgs>
   notifications?: boolean | Prisma.Task$notificationsArgs<ExtArgs>
@@ -810,6 +848,7 @@ export type TaskSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   priority?: boolean
   status?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["task"]>
 
@@ -823,6 +862,7 @@ export type TaskSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   priority?: boolean
   status?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["task"]>
 
@@ -836,9 +876,10 @@ export type TaskSelectScalar = {
   priority?: boolean
   status?: boolean
   createdAt?: boolean
+  updatedAt?: boolean
 }
 
-export type TaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "type" | "category" | "dueDate" | "priority" | "status" | "createdAt", ExtArgs["result"]["task"]>
+export type TaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "type" | "category" | "dueDate" | "priority" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["task"]>
 export type TaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reminders?: boolean | Prisma.Task$remindersArgs<ExtArgs>
@@ -869,6 +910,7 @@ export type $TaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     priority: string
     status: string
     createdAt: Date
+    updatedAt: Date
   }, ExtArgs["result"]["task"]>
   composites: {}
 }
@@ -1304,6 +1346,7 @@ export interface TaskFieldRefs {
   readonly priority: Prisma.FieldRef<"Task", 'String'>
   readonly status: Prisma.FieldRef<"Task", 'String'>
   readonly createdAt: Prisma.FieldRef<"Task", 'DateTime'>
+  readonly updatedAt: Prisma.FieldRef<"Task", 'DateTime'>
 }
     
 

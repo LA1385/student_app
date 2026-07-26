@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { TaskInput } from '@/lib/validators/taskValidators';
 
 // Full task list for a user
 export async function getTasks(userId: string) {
@@ -8,55 +9,62 @@ export async function getTasks(userId: string) {
     })
 };
 
-// Task summary for a user
 export async function getTaskSummary(userId: string) {
-    // Calculate the start and end of the current day
-    try{
-        const now = new Date()
-        const todayUTC = now.toISOString().split('T')[0] // "2026-05-29"
+    try {
+        const now = new Date();
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const endOfToday = new Date(startOfToday.getTime() + 24*60*60*1000 - 1);
+        const sevenDaysLater = new Date(now.getTime() + 7*24*60*60*1000);
 
-        const startOfDay = new Date(`${todayUTC}T00:00:00.000Z`)
-        const endOfDay = new Date(`${todayUTC}T23:59:59.999Z`)
-        const endOfWeek = new Date(`${todayUTC}T23:59:59.999Z`)
-        endOfWeek.setDate(new Date(todayUTC).getDate() + 7)
-        const endOfWeekTimestamp = endOfWeek.getTime()
+        const dueTodayResult = await prisma.$queryRaw<{count: number}[]>`
+            SELECT COUNT(*) as count FROM Task 
+            WHERE userId = ${userId} 
+            AND dueDate >= ${startOfToday.getTime()} 
+            AND dueDate <= ${endOfToday.getTime()}
+            AND status != 'completed'
+        `;
+        const dueToday = Number(dueTodayResult[0].count);
 
-        const raw = await prisma.$queryRaw`
-        SELECT id, dueDate, typeof(dueDate) as dateType 
-        FROM Task 
-        WHERE userId = ${userId}
-`
-        console.log("raw query result:", raw)
-
-
-        const dueToday = await prisma.task.count({
-            where: {
-                userId,
-                dueDate: { gte: startOfDay, lte: endOfDay },
-                status: { not: "completed" }
-            }
-        })
-
-        // your thisWeek and completed queries go here
-        const dueThisWeek = await prisma.task.count({
-            where: {
-                userId,
-                dueDate: { gte: startOfDay, lte: endOfWeek },
-                status: { not: "completed" }
-            }
-        })
+        const dueThisWeekResult = await prisma.$queryRaw<{count: number}[]>`
+            SELECT COUNT(*) as count FROM Task 
+            WHERE userId = ${userId} 
+            AND dueDate >= ${startOfToday.getTime()} 
+            AND dueDate <= ${sevenDaysLater.getTime()}
+            AND status != 'completed'
+        `;
+        const dueThisWeek = Number(dueThisWeekResult[0].count);
 
         const completed = await prisma.task.count({
-            where: {
-                userId,
-                status: "completed"
-            }
-        })
+            where: { userId, status: "completed" }
+        });
 
-        console.log("summary:", { dueToday, dueThisWeek, completed })
         return { dueToday, dueThisWeek, completed };
+
     } catch (error) {
         console.error("Error fetching task summary:", error);
         return { dueToday: 0, dueThisWeek: 0, completed: 0 };
     }
+}
+
+export async function createTask(userId: string, data: TaskInput){
+    const { title, type, dueDate, priority, category, daysBefore, channel } = data;
+    return await prisma.task.create({
+        data: {
+            title,
+            type,
+            dueDate: new Date(dueDate),
+            priority,
+            category,
+            userId,
+            reminders: {
+                create: {
+                    daysBefore,
+                    userId,
+                    channel,
+                    scheduledAt: new Date(new Date(dueDate).getTime() - daysBefore * 24 * 60 * 60 * 1000)
+                }
+            }
+            
+        }
+    })
 }

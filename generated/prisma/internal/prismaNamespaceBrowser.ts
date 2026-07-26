@@ -131,7 +131,8 @@ export const TaskScalarFieldEnum = {
   dueDate: 'dueDate',
   priority: 'priority',
   status: 'status',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]

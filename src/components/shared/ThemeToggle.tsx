@@ -1,19 +1,20 @@
 "use client"
 
-import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { Sun, Moon } from 'lucide-react';
+import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+         // eslint-disable-next-line react-hooks/set-state-in-effect -- mount-detection guard for SSR hydration, not app state sync
         setMounted(true);
     }, []);
 
     if (!mounted) {
-        return null;
+        return <button className="p-2 rounded-md w-9 h-9" />;
     }
 
     return (
