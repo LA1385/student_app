@@ -1,12 +1,16 @@
 'use client'
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import  Input  from "@/components/Tasks/Input";
 import  Button  from "@/components/Tasks/Button";
 import { Bell } from "lucide-react";
+import { Loader2 } from "lucide-react";
+
 
 export default function NewTaskForm() {
-
+    const router = useRouter();
+    const [isDisabled, setIsDisabled] = useState(false);
     const [formData, setFormData] = useState({
     title: "",
     type: "",
@@ -18,10 +22,64 @@ export default function NewTaskForm() {
     customDays: "",
     channel: "Both"
 });
-
     const updateField = (field:string, value:string) => {
         {setFormData(prev => ({...prev, [field]: value}) )}
     }
+     const [errors, setErrors] = useState({});
+
+     const validateForm = () => {
+        const newErrors: { [key: string]: string } = {};
+        if (!formData.title) newErrors.title = "Title is required";
+        if (!formData.type) newErrors.type = "Type is required";
+        if (!formData.dueDate) newErrors.dueDate = "Due date is required";
+        if (!formData.daysBefore) newErrors.daysBefore = "Days before is required";
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    }
+
+
+    const payload = {
+        title: formData.title,
+        type: formData.type,
+        dueDate: formData.dueDate,
+        priority: formData.priority,
+        category: formData.category,
+        time: formData.time,
+        daysBefore: formData.daysBefore === "Custom" ? Number(formData.customDays) : Number(formData.daysBefore),
+        channel: formData.channel
+    }
+
+    const  handleSubmit = async()   => {
+        // Validate form data before submission
+        if (!validateForm()) {
+            return;
+        }
+        setIsDisabled(true);
+        try{
+            const response = await fetch('/api/tasks', 
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            if (response.ok) {
+            // Task created successfully
+                router.push('/dashboard');
+            }
+            else {
+                const errorData = await response.json();
+                console.error('Error creating task:', errorData);
+                alert('Failed to create task. Please try again.');
+            }
+            } catch (error) {
+                console.error('Error submitting task:', error);
+            }
+            finally {
+                setIsDisabled(false);
+            }
+        }
 
     return (
         <div>
@@ -38,11 +96,14 @@ export default function NewTaskForm() {
                     type = 'text'
                     value = {formData.title}
                     onChange = {(e) => updateField('title', e.target.value)}
-                    placeholder ="e.g Submit IFT211 Assignment"/>
+                    placeholder ="e.g Submit IFT211 Assignment"
+                    error = {errors.title}
+                    />
                 </div>
 
                 <div>
                     <h4>Task Type</h4>
+                    {errors.type && <p className="text-red-500">{errors.type}</p>}
                     <div>
                         <Button
                         label = " Assignment "
@@ -63,8 +124,8 @@ export default function NewTaskForm() {
                         onSelect = {() => updateField('type', 'Exam')}/>
 
                         <Button
-                        label = " Event "
-                        value = "Event "
+                        label = "Event"
+                        value = "Event"
                         isSelected = {formData.type === "Event"}
                         onSelect = {() => updateField('type', 'Event')}/>
 
@@ -82,6 +143,7 @@ export default function NewTaskForm() {
                     type = "date"
                     value = {formData.dueDate}
                     onChange={(e) => updateField('dueDate', e.target.value)}
+                    error = {errors.dueDate}
                     />
                 </div>
 
@@ -90,7 +152,7 @@ export default function NewTaskForm() {
                     inputTitle="Time"
                     type="time"
                     value = {formData.time}
-                    onChange={(e) => updateField('time', e.target.value)}
+                    onChange={(e) => updateField('time', e.target.value)} 
                     />
                 </div>
 
@@ -121,8 +183,10 @@ export default function NewTaskForm() {
                     type="text"
                     value = {formData.category}
                     onChange={(e) => updateField('category', e.target.value)}
-                    placeholder="its optional, e.g Elective, Required e.t.c"/>
-                </div>
+                    placeholder="its optional, e.g Elective, Required e.t.c"
+                    error = {errors.category}
+                />
+            </div>
 
 
             </div>
@@ -154,6 +218,22 @@ export default function NewTaskForm() {
                         value = "7"
                         isSelected = {formData.daysBefore === "7"}
                         onSelect = {() => updateField('daysBefore', '7')}/>
+                        
+                        <Button
+                        label=" Custom "
+                        value="Custom"
+                        isSelected={formData.daysBefore === "Custom"}
+                        onSelect={() => updateField('daysBefore', 'Custom')}/>
+
+                        {formData.daysBefore === "Custom" && (
+                            <Input
+                                inputTitle="Custom days"
+                                type="text"
+                                value={formData.customDays}
+                                onChange={(e) => updateField('customDays', e.target.value)}
+                                placeholder="e.g. 5"
+                            />
+                        )}
                     </div>
                  </div>
 
@@ -168,9 +248,9 @@ export default function NewTaskForm() {
 
                         <Button
                         label = " In app notification "
-                        value = "App"
-                        isSelected = {formData.channel === "App"}
-                        onSelect = {() => updateField('channel', 'App')}/>
+                        value = "In-app"
+                        isSelected = {formData.channel === "In-app"}
+                        onSelect = {() => updateField('channel', 'In-app')}/>
 
                         <Button
                         label = " Both "
@@ -181,14 +261,23 @@ export default function NewTaskForm() {
                  </div>
                 
                 {/* Reminder Preview */}
-                 <div></div>
+                 <div>
+                    <h4>Reminder Preview</h4>
+                    <div>You&apos;ll be reminded <b> { formData.daysBefore } days before</b>, via <b>{ formData.channel } </b>. This ensures you have ample time to curate your best work.</div>
+                 </div>
             </div>
 
             <hr/>
             
             <div>
-                {/* <Button /> */}
-                {/* <Button /> */}
+                {/* Cancel <Button /> */}
+                <button onClick = { () => router.back() }>Cancel</button>
+                {/*Save task <Button /> */}
+                <button 
+                 onClick={handleSubmit}
+                 >
+                    {isDisabled ? <Loader2 className="animate-spin" /> : "Save Task"}
+                 </button>
             </div>
         </div>
     )

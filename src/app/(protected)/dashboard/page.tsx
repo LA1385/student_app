@@ -56,10 +56,11 @@ export default async function Dashboard() {
                     <div>
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-xl font-bold text-text">Active Tasks</h2>
-                            <button className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer border-none shadow-sm">
+                            <Link href="/dashboard/tasks/new"
+                             className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer border-none shadow-sm">
                                 <Plus className="w-4 h-4" />
                                 <span>Add</span>
-                            </button>
+                            </Link>
                         </div>
                         <div className="flex flex-col gap-3">
                             {tasks.map((task) => (
