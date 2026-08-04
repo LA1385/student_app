@@ -2,8 +2,6 @@ import "dotenv/config";
 import { PrismaClient } from "../../generated/prisma/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 
-console.log("DB URL:", process.env.DATABASE_URL);
-
 const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined;
     prismaAdapter: PrismaLibSql | undefined;

@@ -29,7 +29,7 @@ export default async function Dashboard() {
     ]
 
     return (
-        <div className="pt-14 md:pl-60 min-h-screen bg-bg-page pb-16 md:pb-0">
+        <div className="bg-bg-page">
             <div className="p-4 md:p-6">
                 {/* Metric Cards Row */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
@@ -56,8 +56,7 @@ export default async function Dashboard() {
                     <div>
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-xl font-bold text-text">Active Tasks</h2>
-                            <Link href="/dashboard/tasks/new"
-                             className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer border-none shadow-sm">
+                            <Link href="/dashboard/tasks/new" className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer border-none shadow-sm">
                                 <Plus className="w-4 h-4" />
                                 <span>Add</span>
                             </Link>
@@ -102,10 +101,10 @@ export default async function Dashboard() {
                     <div>
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="text-xl font-bold text-text">Active Tasks</h2>
-                            <button className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer border-none shadow-sm">
+                            <Link href="/dashboard/tasks/new" className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer border-none shadow-sm">
                                 <Plus className="w-4 h-4" />
                                 <span>Add</span>
-                            </button>
+                            </Link>
                         </div>
                         <div className="flex flex-col gap-3">
                             {tasks.map((task) => (
