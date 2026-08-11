@@ -1,11 +1,8 @@
 export default function PriorityBadge({ priority, className }: { priority: string; className?: string }) {
     const colorMap: Record<string, string> = {
-        URGENT:    'bg-red-100 text-urgent',
+        HiGH:    'bg-red-100 text-urgent',
         MEDIUM:    'bg-amber-100 text-upcoming',
         LOW:       'bg-green-100 text-later',
-        OVERDUE:   'bg-red-100 text-urgent',
-        PENDING:   'bg-slate-100 text-done',
-        COMPLETED: 'bg-green-100 text-later',
     };
 
     const key = priority.toUpperCase();

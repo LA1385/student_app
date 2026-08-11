@@ -70,6 +70,7 @@ export default async function Dashboard() {
                                     dueDate={task.dueDate.toString()}
                                     priority={task.priority}
                                     category={task.category?? ""}
+                                    status={task.status}
                                 />
                             ))}
                         </div>
@@ -115,6 +116,7 @@ export default async function Dashboard() {
                                     dueDate={task.dueDate.toString()}
                                     priority={task.priority}
                                     category={task.category ?? ""}
+                                    status={task.status}
                                 />
                             ))}
                         </div>

@@ -46,3 +46,23 @@ export const bucketTasks = (tasks: Task[], now: Date) => {
     
     return section;
   }
+
+export const formatDueDate = (dueDate: string, now: Date) => {
+    const startOfDay = (d: Date) =>
+        new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+
+    const dueMs = startOfDay(new Date(dueDate));
+    const nowMs = startOfDay(now);
+
+    const oneDayMs = 24 * 60 * 60 * 1000;
+    const dayDiff = Math.round((dueMs - nowMs) / oneDayMs);
+
+    if (dayDiff === 0) return "Today";
+    if (dayDiff === 1) return "Tomorrow";
+    if (dayDiff === -1) return "Yesterday";
+
+    return new Date(dueDate).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+    });
+};
