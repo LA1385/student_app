@@ -66,3 +66,31 @@ export const formatDueDate = (dueDate: string, now: Date) => {
         day: 'numeric',
     });
 };
+
+export const filterBySearch = (tasks: Task[], searchTerm: string) => {
+  return tasks.filter((task) => { 
+    return task.title.toLowerCase().includes(searchTerm.toLowerCase())
+});
+};
+
+export const filterByStatus = (tasks: Task[], taskStatus: string, now: Date) => {
+    const nowMs = now.getTime();
+    
+    if (taskStatus === "All") return tasks;
+
+    else if (taskStatus === "Pending") {
+      return tasks.filter((task) => {
+        const dueDateMs: number = new Date(task.dueDate).getTime(); 
+        return task.status === "pending" && dueDateMs >= nowMs
+      })
+    }
+
+    else if (taskStatus === "Overdue") {
+      return tasks.filter((task) => {
+        const dueDateMs: number = new Date(task.dueDate).getTime();
+        return task.status === "pending" && dueDateMs < nowMs
+      })
+    }; 
+    
+   return tasks.filter((task) => task.status === "completed")
+}

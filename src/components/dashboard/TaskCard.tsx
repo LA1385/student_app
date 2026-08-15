@@ -1,16 +1,19 @@
 import { Clock, GraduationCap } from "lucide-react";
 import PriorityBadge from "./PriorityBadge";
+import { formatDueDate } from "@/lib/utils";
 
 type TaskCardProps = {
     title: string;
     type: string;
     dueDate: string;
     priority: string;
-    status: string
+    status: string;
+    now: Date;
     category?: string;
+    
 };
 
-export default function TaskCard({ title, type, dueDate, priority, status, category }: TaskCardProps) {
+export default function TaskCard({ title, type, dueDate, priority, status, category, now }: TaskCardProps) {
     const borderMap: Record<string, string> = {
         OVERDUE: 'border-l-urgent',
         COMPLETED: 'border-l-done',
@@ -36,10 +39,7 @@ export default function TaskCard({ title, type, dueDate, priority, status, categ
             <div className="flex items-center gap-3 mt-0.5">
                 <div className="text-xs text-text-muted flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-text-muted" />
-                    <span>Due {new Date(dueDate).toLocaleDateString(
-                        'en-US',
-                        { month: 'short', day: 'numeric' }
-                    )}</span>
+                    <span>Due {formatDueDate(dueDate, now)}</span>
                 </div>
                 {category && (
                     <div className="text-xs text-text-muted flex items-center gap-1">
