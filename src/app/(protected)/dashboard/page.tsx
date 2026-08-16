@@ -16,6 +16,7 @@ export default async function Dashboard() {
     if (!session || !session.user) redirect("/")
 
     const userId = session.user.id;
+    const now = new Date();
     const [tasks, taskSummary] = await Promise.all([
         getTasks(userId),
         getTaskSummary(userId)
@@ -67,10 +68,11 @@ export default async function Dashboard() {
                                     key={task.id}
                                     title={task.title}
                                     type={task.type}
-                                    dueDate={task.dueDate.toString()}
+                                    dueDate={task.dueDate.toISOString()}
                                     priority={task.priority}
                                     category={task.category?? ""}
                                     status={task.status}
+                                    now={now}
                                 />
                             ))}
                         </div>
@@ -113,11 +115,12 @@ export default async function Dashboard() {
                                     key={task.id}
                                     title={task.title}
                                     type={task.type}
-                                    dueDate={task.dueDate.toString()}
+                                    dueDate={task.dueDate.toISOString()}
                                     priority={task.priority}
                                     category={task.category ?? ""}
                                     status={task.status}
-                                />
+                                    now={now}
+                                    />
                             ))}
                         </div>
                     </div>

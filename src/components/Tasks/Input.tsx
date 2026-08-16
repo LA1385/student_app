@@ -1,5 +1,3 @@
-'use client';
-
 type InputProps = {
     inputTitle: string;
     value: string;
