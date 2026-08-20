@@ -108,7 +108,7 @@ export default function NewTaskForm() {
     // ---------- Render ----------
 
     return (
-        <div className="pt-14">
+        <div className="py-4 md:py-6">
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
                 <div className="mb-8 space-y-2">
                     <p className="text-sm font-semibold uppercase tracking-[0.3em] text-text-secondary">Tasks / New Task</p>

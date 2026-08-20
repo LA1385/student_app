@@ -15,8 +15,6 @@ export async function getTaskSummary(userId: string) {
         const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const endOfToday = new Date(startOfToday.getTime() + 24*60*60*1000 - 1);
         const sevenDaysLater = new Date(now.getTime() + 7*24*60*60*1000);
-        console.log("DEBUG startOfToday:", startOfToday.getTime(), startOfToday.toISOString());
-        console.log("DEBUG sevenDaysLater:", sevenDaysLater.getTime(), sevenDaysLater.toISOString());
 
         const dueTodayResult = await prisma.$queryRaw<{count: number}[]>`
             SELECT COUNT(*) as count FROM Task 
