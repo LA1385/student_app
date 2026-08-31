@@ -68,3 +68,9 @@ export async function createTask(userId: string, data: TaskInput){
         }
     })
 }
+
+export async function getTaskById(taskId: string, userId: string) {
+    return await prisma.task.findUnique({
+        where: {id: taskId, userId},
+    })
+}
