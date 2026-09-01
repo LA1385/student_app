@@ -74,3 +74,9 @@ export async function getTaskById(taskId: string, userId: string) {
         where: {id: taskId, userId},
     })
 }
+
+export async function getTaskReminders(taskId: string, userId: string) {
+    return await prisma.reminder.findFirst({
+        where: {  taskId, userId },
+    })
+}
