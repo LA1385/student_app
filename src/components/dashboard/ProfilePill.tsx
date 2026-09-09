@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import { ChevronDown, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
+import  Image  from "next/image";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -19,6 +20,7 @@ export default function ProfilePill() {
     useEffect(() => {
         const hasSeen = localStorage.getItem("has seen profile tip");
         if (!hasSeen) {
+             // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsVisible(true);
             const timer = setTimeout(() => {
                 setIsVisible(false);
@@ -33,7 +35,7 @@ export default function ProfilePill() {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-bg-card border border-border rounded-full hover:bg-bg-input transition-colors cursor-pointer select-none">
-                        <img 
+                        <Image 
                             src={session?.user?.image ?? "/logo.png"} 
                             alt="profile" 
                             className="w-7 h-7 rounded-full object-cover ring-2 ring-border"

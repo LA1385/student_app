@@ -9,8 +9,7 @@ type TaskCardProps = {
     priority: string;
     status: string;
     now: Date;
-    category?: string;
-    
+    category?: string;  
 };
 
 export default function TaskCard({ title, type, dueDate, priority, status, category, now }: TaskCardProps) {
