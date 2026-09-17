@@ -29,12 +29,28 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     }
     const userId = user.id;
     const { id: taskId } = await params;
+    const body = await request.json();
 
-    // Patch for task completed
+    // Patch for task information changed and status completed
     try {
         await prisma.task.update({
             where: {id: taskId, userId},
-            data: { status: "completed" },
+            data: { 
+                title: body.title ?? undefined,
+                type: body.type ?? undefined,
+                dueDate: body.dueDate ?? undefined,
+                priority: body.priority ?? undefined,
+                status: body.status ?? undefined,
+                reminders: body.reminderId ? {
+                    update: {
+                        where: { id: body.reminderId },
+                        data: {
+                            channel: body.channel ?? undefined,
+                            daysBefore: body.daysBefore ?? undefined,
+                        }
+                    }
+                } : undefined,
+             },
         });
         return NextResponse.json({ message: "Task marked as completed" });
     } catch (error) {

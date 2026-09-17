@@ -35,11 +35,13 @@ export default function ProfilePill() {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-bg-card border border-border rounded-full hover:bg-bg-input transition-colors cursor-pointer select-none">
-                        <Image 
-                            src={session?.user?.image ?? "/logo.png"} 
+                        {/* <Image 
+                            src={session?.user?.image || "/logo.png"} 
                             alt="profile" 
                             className="w-7 h-7 rounded-full object-cover ring-2 ring-border"
-                        />
+                            width={28}
+                            height={28}
+                        /> */}
                         <span className="text-sm font-medium text-text hidden md:inline">
                             {session?.user?.name?.split(" ")[0] || "User"}
                         </span>

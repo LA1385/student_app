@@ -14,7 +14,7 @@ import {
   Plus,
 } from "lucide-react";
 import TaskCard from "@/components/dashboard/TaskCard";
-import EmptyStateCard from "@/components/Tasks/emptyStateCard";
+import EmptyStateCard from "@/components/Tasks/EmptyStateCard";
 
 type TaskPageClientProps = {
   tasks: Task[];
@@ -108,8 +108,9 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                   </h2>
                 </div>
                 {overDue.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {overDue.map((task) => (
+                      <Link key={task.id} href={`/dashboard/tasks/${task.id}`} className="block">
                       <TaskCard
                         key={task.id}
                         title={task.title}
@@ -120,6 +121,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                         status={task.status}
                         now={now}
                       />
+                    </Link>
                     ))}
                   </div>
                 ) : (
@@ -143,6 +145,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                 {thisWeek.length > 0 ? (
                   <div className="space-y-3">
                     {thisWeek.map((task) => (
+                      <Link key={task.id} href={`/dashboard/tasks/${task.id}`} className="block">
                       <TaskCard
                         key={task.id}
                         title={task.title}
@@ -153,6 +156,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                         status={task.status}
                         now={now}
                       />
+                      </Link>
                     ))}
                   </div>
                 ) : (
@@ -177,6 +181,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
               {upComing.length > 0 ? (
                 <div className="space-y-3">
                   {upComing.map((task) => (
+                    <Link key={task.id} href={`/dashboard/tasks/${task.id}`} className="block">
                     <TaskCard
                       key={task.id}
                       title={task.title}
@@ -187,6 +192,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                       status={task.status}
                       now={now}
                     />
+                    </Link>
                   ))}
                 </div>
               ) : (
@@ -214,6 +220,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
             {filteredTasks.length > 0 ? (
               <div className="space-y-3">
                 {filteredTasks.map((task) => (
+                  <Link key={task.id} href={`/dashboard/tasks/${task.id}`} className="block">
                   <TaskCard
                     key={task.id}
                     title={task.title}
@@ -224,6 +231,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                     status={task.status}
                     now={now}
                   />
+                  </Link>
                 ))}
               </div>
             ) : (

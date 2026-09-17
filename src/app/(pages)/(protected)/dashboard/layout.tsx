@@ -9,7 +9,7 @@ export default function ProtectedLayout({
             <div className="min-h-screen bg-bg-page text-text">
                 <NavBar />
                 <SideBar />
-                <main className="min-h-screen px-4 pb-20 pt-14 md:pl-60 md:pr-6 md:pb-8">
+                <main className="min-h-screen px-4 pb-20 pt-14 md:pl-64 md:pr-12 md:pb-8">
                     {children}
                 </main>
                 <BottomNav />

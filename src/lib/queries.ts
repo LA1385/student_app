@@ -35,7 +35,7 @@ export async function getTaskSummary(userId: string) {
         const dueThisWeek = Number(dueThisWeekResult[0].count);
 
         const completed = await prisma.task.count({
-            where: { userId, status: "completed" }
+            where: { userId, status: "Completed" }
         });
 
         return { dueToday, dueThisWeek, completed };

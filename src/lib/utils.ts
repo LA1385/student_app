@@ -39,8 +39,8 @@ export const bucketTasks = (tasks: Task[], now: Date) => {
         section.thisWeek.push(task)
       }
 
-      else {
-        section.upComing.push(task)
+      else{
+        section.upComing.push(task);
       }
     })
     
@@ -92,5 +92,5 @@ export const filterByStatus = (tasks: Task[], taskStatus: string, now: Date) => 
       })
     }; 
     
-   return tasks.filter((task) => task.status === "completed")
+   return tasks.filter((task) => task.status === "Completed")
 }

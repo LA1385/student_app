@@ -64,6 +64,7 @@ export default async function Dashboard() {
                         </div>
                         <div className="flex flex-col gap-3">
                             {tasks.map((task) => (
+                                <Link key={task.id} href={` /dashboard/tasks/${task.id}`}>
                                 <TaskCard 
                                     key={task.id}
                                     title={task.title}
@@ -74,6 +75,7 @@ export default async function Dashboard() {
                                     status={task.status}
                                     now={now}
                                 />
+                                </Link>
                             ))}
                         </div>
                     </div>
@@ -111,6 +113,7 @@ export default async function Dashboard() {
                         </div>
                         <div className="flex flex-col gap-3">
                             {tasks.map((task) => (
+                                <Link key={task.id} href={`/dashboard/tasks/${task.id}`}>
                                 <TaskCard
                                     key={task.id}
                                     title={task.title}
@@ -121,6 +124,7 @@ export default async function Dashboard() {
                                     status={task.status}
                                     now={now}
                                     />
+                                </Link>
                             ))}
                         </div>
                     </div>
