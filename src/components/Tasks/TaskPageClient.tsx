@@ -24,14 +24,24 @@ type TaskPageClientProps = {
 export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
   const [searchText, setSearchText] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [localTasks, setLocalTasks] = useState<Task[]>(tasks);
 
   const filteredTasks = filterByStatus(
-    filterBySearch(tasks, searchText),
+    filterBySearch(localTasks, searchText),
     activeFilter,
     now,
   );
 
+  const handleTaskCompletion = (taskId: string) => {
+    setLocalTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId ? { ...task, status: "Completed" } : task,
+      ),
+    );
+  }
+
   const { overDue, thisWeek, upComing } = bucketTasks(filteredTasks, now);
+
   return (
     <div className="space-y-8 py-4 md:py-6">
       {/* Heading & Add Task Button */}
@@ -120,6 +130,8 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                         category={task.category ?? ""}
                         status={task.status}
                         now={now}
+                        taskId={task.id}
+                        onComplete={handleTaskCompletion}
                       />
                     </Link>
                     ))}
@@ -148,6 +160,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                       <Link key={task.id} href={`/dashboard/tasks/${task.id}`} className="block">
                       <TaskCard
                         key={task.id}
+                        taskId={task.id}
                         title={task.title}
                         type={task.type}
                         dueDate={task.dueDate.toISOString()}
@@ -155,6 +168,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                         category={task.category ?? ""}
                         status={task.status}
                         now={now}
+                        onComplete={handleTaskCompletion}
                       />
                       </Link>
                     ))}
@@ -184,6 +198,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                     <Link key={task.id} href={`/dashboard/tasks/${task.id}`} className="block">
                     <TaskCard
                       key={task.id}
+                      taskId={task.id}
                       title={task.title}
                       type={task.type}
                       dueDate={task.dueDate.toISOString()}
@@ -191,6 +206,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                       category={task.category ?? ""}
                       status={task.status}
                       now={now}
+                      onComplete={handleTaskCompletion}
                     />
                     </Link>
                   ))}
@@ -223,6 +239,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                   <Link key={task.id} href={`/dashboard/tasks/${task.id}`} className="block">
                   <TaskCard
                     key={task.id}
+                    taskId={task.id}
                     title={task.title}
                     type={task.type}
                     dueDate={task.dueDate.toISOString()}
@@ -230,6 +247,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
                     category={task.category ?? ""}
                     status={task.status}
                     now={now}
+                    onComplete={handleTaskCompletion}
                   />
                   </Link>
                 ))}

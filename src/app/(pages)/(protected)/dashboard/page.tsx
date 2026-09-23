@@ -67,6 +67,7 @@ export default async function Dashboard() {
                                 <Link key={task.id} href={` /dashboard/tasks/${task.id}`}>
                                 <TaskCard 
                                     key={task.id}
+                                    taskId={task.id}
                                     title={task.title}
                                     type={task.type}
                                     dueDate={task.dueDate.toISOString()}
@@ -116,6 +117,7 @@ export default async function Dashboard() {
                                 <Link key={task.id} href={`/dashboard/tasks/${task.id}`}>
                                 <TaskCard
                                     key={task.id}
+                                    taskId={task.id}
                                     title={task.title}
                                     type={task.type}
                                     dueDate={task.dueDate.toISOString()}
