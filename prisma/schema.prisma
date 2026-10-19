@@ -80,6 +80,8 @@ model Reminder {
   daysBefore  Int
   channel     String
   sent        Boolean  @default(false)
+  attempts    Int @default(0)
+  lastError   String? 
   scheduledAt DateTime
   createdAt   DateTime @default(now())
 
