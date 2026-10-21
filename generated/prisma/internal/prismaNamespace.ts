@@ -1036,6 +1036,8 @@ export const ReminderScalarFieldEnum = {
   daysBefore: 'daysBefore',
   channel: 'channel',
   sent: 'sent',
+  attempts: 'attempts',
+  lastError: 'lastError',
   scheduledAt: 'scheduledAt',
   createdAt: 'createdAt'
 } as const
