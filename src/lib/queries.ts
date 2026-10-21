@@ -21,7 +21,7 @@ export async function getTaskSummary(userId: string) {
             WHERE userId = ${userId} 
             AND dueDate >= ${startOfToday.toISOString()} 
             AND dueDate <= ${endOfToday.toISOString()}
-            AND status != 'completed'
+            AND status != 'Completed'
         `;
         const dueToday = Number(dueTodayResult[0].count);
 
@@ -30,7 +30,7 @@ export async function getTaskSummary(userId: string) {
             WHERE userId = ${userId} 
             AND dueDate >= ${startOfToday.toISOString()} 
             AND dueDate <= ${sevenDaysLater.toISOString()}
-            AND status != 'completed'
+            AND status != 'Completed'
         `;
         const dueThisWeek = Number(dueThisWeekResult[0].count);
 
