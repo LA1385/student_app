@@ -5,12 +5,13 @@ import { sendEmail } from './email';
 
 const BATCH_SIZE = 50;
 export type ReminderRunSummary = {
-    ran: boolean;      // false = skipped because a run was already in progress
+    ran: boolean;       // false = skipped because a run was already in progress
     found: number;
-    sent: number;      // email was accepted by the mail server
-    failed: number;    // send failed, attempt recorded
-    skipped: number;   // in-app-only, not handled here
-    unmarked: number;  // email went out but marking it sent failed
+    sent: number;       // emails accepted by the mail server
+    notified: number;   // in-app notifications created or already present
+    failed: number;     // reminders where a requested channel failed
+    skipped: number;    // reminders with an unrecognized channel
+    unmarked: number;   // all channels succeeded but marking sent failed
 };
 
 const findDueReminders = (now: Date) => {
@@ -60,12 +61,12 @@ export const processDueReminders = async (): Promise<ReminderRunSummary> => {
     // Overlap guard: if a run is still going, don't start another
     if (isRunning) {
         console.log("Previous reminder run still in progress, skipping");
-        return { ran: false, found: 0, sent: 0, failed: 0, skipped: 0, unmarked: 0 };
+        return { ran: false, found: 0, sent: 0, notified: 0, failed: 0, skipped: 0, unmarked: 0 };
     }
     isRunning = true;
 
     const summary: ReminderRunSummary = {
-        ran: true, found: 0, sent: 0, failed: 0, skipped: 0, unmarked: 0,
+        ran: true, found: 0, sent: 0, notified: 0, failed: 0, skipped: 0, unmarked: 0,
     };
 
     try {
@@ -75,23 +76,45 @@ export const processDueReminders = async (): Promise<ReminderRunSummary> => {
 
         for (const reminder of reminders) {
             const wantsEmail = reminder.channel === "Email" || reminder.channel === "Both";
-            if (!wantsEmail) {
+            const wantsInApp = reminder.channel === "In-app" || reminder.channel === "Both";
+
+            if (!wantsEmail && !wantsInApp) {
                 summary.skipped++;
                 continue;
             }
 
-            // Step 1: send. Only this decides success or failure.
-            try {
-                if (!reminder.user.email) throw new Error("User has no email");
+            // Plain text. Escaped separately for the email only.
+            const message = `Your task "${reminder.task.title}" is due on ${formatDate(reminder.task.dueDate)}.`;
 
-                await sendEmail(
-                    reminder.user.email,
-                    `Reminder: ${reminder.task.title}`,
-                    `<p>Your task "${escapeHtml(reminder.task.title)}" is due on ${formatDate(reminder.task.dueDate)}.</p>`
-                );
+            // Step 1: deliver. Notification first; if it throws, the email is skipped this run.
+            try {
+                if (wantsInApp) {
+                    await prisma.notification.upsert({
+                        where: { reminderId: reminder.id },
+                        update: {},
+                        create: {
+                            userId: reminder.user.id,
+                            taskId: reminder.task.id,
+                            reminderId: reminder.id,
+                            message,
+                        },
+                    });
+                    summary.notified++;
+                }
+
+                if (wantsEmail) {
+                    if (!reminder.user.email) throw new Error("User has no email");
+
+                    await sendEmail(
+                        reminder.user.email,
+                        `Reminder: ${reminder.task.title}`,
+                        `<p>${escapeHtml(message)}</p>`
+                    );
+                    summary.sent++;
+                }
             }
             catch (error) {
-                console.error(`Failed to send reminder ${reminder.id}:`, error);
+                console.error(`Failed to deliver reminder ${reminder.id}:`, error);
                 summary.failed++;
 
                 await prisma.reminder.update({
@@ -105,9 +128,7 @@ export const processDueReminders = async (): Promise<ReminderRunSummary> => {
                 continue;
             }
 
-            summary.sent++;
-
-            // Step 2: mark as sent. The email already went out, so this is not a failed attempt.
+            // Step 2: every requested channel succeeded, so mark as sent.
             try {
                 await prisma.reminder.update({
                     where: { id: reminder.id },
@@ -116,7 +137,7 @@ export const processDueReminders = async (): Promise<ReminderRunSummary> => {
             }
             catch (error) {
                 summary.unmarked++;
-                console.error(`Email sent but reminder ${reminder.id} was not marked as sent:`, error);
+                console.error(`Delivered but reminder ${reminder.id} was not marked as sent:`, error);
             }
         }
 
