@@ -28,6 +28,7 @@ export type NotificationMinAggregateOutputType = {
   id: string | null
   userId: string | null
   taskId: string | null
+  reminderId: string | null
   message: string | null
   read: boolean | null
   createdAt: Date | null
@@ -37,6 +38,7 @@ export type NotificationMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   taskId: string | null
+  reminderId: string | null
   message: string | null
   read: boolean | null
   createdAt: Date | null
@@ -46,6 +48,7 @@ export type NotificationCountAggregateOutputType = {
   id: number
   userId: number
   taskId: number
+  reminderId: number
   message: number
   read: number
   createdAt: number
@@ -57,6 +60,7 @@ export type NotificationMinAggregateInputType = {
   id?: true
   userId?: true
   taskId?: true
+  reminderId?: true
   message?: true
   read?: true
   createdAt?: true
@@ -66,6 +70,7 @@ export type NotificationMaxAggregateInputType = {
   id?: true
   userId?: true
   taskId?: true
+  reminderId?: true
   message?: true
   read?: true
   createdAt?: true
@@ -75,6 +80,7 @@ export type NotificationCountAggregateInputType = {
   id?: true
   userId?: true
   taskId?: true
+  reminderId?: true
   message?: true
   read?: true
   createdAt?: true
@@ -157,6 +163,7 @@ export type NotificationGroupByOutputType = {
   id: string
   userId: string
   taskId: string
+  reminderId: string
   message: string
   read: boolean
   createdAt: Date
@@ -187,26 +194,31 @@ export type NotificationWhereInput = {
   id?: Prisma.StringFilter<"Notification"> | string
   userId?: Prisma.StringFilter<"Notification"> | string
   taskId?: Prisma.StringFilter<"Notification"> | string
+  reminderId?: Prisma.StringFilter<"Notification"> | string
   message?: Prisma.StringFilter<"Notification"> | string
   read?: Prisma.BoolFilter<"Notification"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Notification"> | Date | string
-  task?: Prisma.XOR<Prisma.TaskScalarRelationFilter, Prisma.TaskWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  task?: Prisma.XOR<Prisma.TaskScalarRelationFilter, Prisma.TaskWhereInput>
+  reminder?: Prisma.XOR<Prisma.ReminderScalarRelationFilter, Prisma.ReminderWhereInput>
 }
 
 export type NotificationOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
+  reminderId?: Prisma.SortOrder
   message?: Prisma.SortOrder
   read?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  task?: Prisma.TaskOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
+  task?: Prisma.TaskOrderByWithRelationInput
+  reminder?: Prisma.ReminderOrderByWithRelationInput
 }
 
 export type NotificationWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  reminderId?: string
   AND?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
   OR?: Prisma.NotificationWhereInput[]
   NOT?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
@@ -215,14 +227,16 @@ export type NotificationWhereUniqueInput = Prisma.AtLeast<{
   message?: Prisma.StringFilter<"Notification"> | string
   read?: Prisma.BoolFilter<"Notification"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Notification"> | Date | string
-  task?: Prisma.XOR<Prisma.TaskScalarRelationFilter, Prisma.TaskWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id">
+  task?: Prisma.XOR<Prisma.TaskScalarRelationFilter, Prisma.TaskWhereInput>
+  reminder?: Prisma.XOR<Prisma.ReminderScalarRelationFilter, Prisma.ReminderWhereInput>
+}, "id" | "reminderId">
 
 export type NotificationOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
+  reminderId?: Prisma.SortOrder
   message?: Prisma.SortOrder
   read?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -238,6 +252,7 @@ export type NotificationScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   taskId?: Prisma.StringWithAggregatesFilter<"Notification"> | string
+  reminderId?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   message?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   read?: Prisma.BoolWithAggregatesFilter<"Notification"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Notification"> | Date | string
@@ -248,14 +263,16 @@ export type NotificationCreateInput = {
   message: string
   read?: boolean
   createdAt?: Date | string
-  task: Prisma.TaskCreateNestedOneWithoutNotificationsInput
   user: Prisma.UserCreateNestedOneWithoutNotificationsInput
+  task: Prisma.TaskCreateNestedOneWithoutNotificationsInput
+  reminder: Prisma.ReminderCreateNestedOneWithoutNotificationInput
 }
 
 export type NotificationUncheckedCreateInput = {
   id?: string
   userId: string
   taskId: string
+  reminderId: string
   message: string
   read?: boolean
   createdAt?: Date | string
@@ -266,14 +283,16 @@ export type NotificationUpdateInput = {
   message?: Prisma.StringFieldUpdateOperationsInput | string
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  task?: Prisma.TaskUpdateOneRequiredWithoutNotificationsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutNotificationsNestedInput
+  task?: Prisma.TaskUpdateOneRequiredWithoutNotificationsNestedInput
+  reminder?: Prisma.ReminderUpdateOneRequiredWithoutNotificationNestedInput
 }
 
 export type NotificationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   taskId?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -283,6 +302,7 @@ export type NotificationCreateManyInput = {
   id?: string
   userId: string
   taskId: string
+  reminderId: string
   message: string
   read?: boolean
   createdAt?: Date | string
@@ -299,6 +319,7 @@ export type NotificationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   taskId?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -314,10 +335,16 @@ export type NotificationOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type NotificationNullableScalarRelationFilter = {
+  is?: Prisma.NotificationWhereInput | null
+  isNot?: Prisma.NotificationWhereInput | null
+}
+
 export type NotificationCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
+  reminderId?: Prisma.SortOrder
   message?: Prisma.SortOrder
   read?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -327,6 +354,7 @@ export type NotificationMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
+  reminderId?: Prisma.SortOrder
   message?: Prisma.SortOrder
   read?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -336,6 +364,7 @@ export type NotificationMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
+  reminderId?: Prisma.SortOrder
   message?: Prisma.SortOrder
   read?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -425,17 +454,51 @@ export type NotificationUncheckedUpdateManyWithoutTaskNestedInput = {
   deleteMany?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
 }
 
+export type NotificationCreateNestedOneWithoutReminderInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutReminderInput, Prisma.NotificationUncheckedCreateWithoutReminderInput>
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutReminderInput
+  connect?: Prisma.NotificationWhereUniqueInput
+}
+
+export type NotificationUncheckedCreateNestedOneWithoutReminderInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutReminderInput, Prisma.NotificationUncheckedCreateWithoutReminderInput>
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutReminderInput
+  connect?: Prisma.NotificationWhereUniqueInput
+}
+
+export type NotificationUpdateOneWithoutReminderNestedInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutReminderInput, Prisma.NotificationUncheckedCreateWithoutReminderInput>
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutReminderInput
+  upsert?: Prisma.NotificationUpsertWithoutReminderInput
+  disconnect?: Prisma.NotificationWhereInput | boolean
+  delete?: Prisma.NotificationWhereInput | boolean
+  connect?: Prisma.NotificationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.NotificationUpdateToOneWithWhereWithoutReminderInput, Prisma.NotificationUpdateWithoutReminderInput>, Prisma.NotificationUncheckedUpdateWithoutReminderInput>
+}
+
+export type NotificationUncheckedUpdateOneWithoutReminderNestedInput = {
+  create?: Prisma.XOR<Prisma.NotificationCreateWithoutReminderInput, Prisma.NotificationUncheckedCreateWithoutReminderInput>
+  connectOrCreate?: Prisma.NotificationCreateOrConnectWithoutReminderInput
+  upsert?: Prisma.NotificationUpsertWithoutReminderInput
+  disconnect?: Prisma.NotificationWhereInput | boolean
+  delete?: Prisma.NotificationWhereInput | boolean
+  connect?: Prisma.NotificationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.NotificationUpdateToOneWithWhereWithoutReminderInput, Prisma.NotificationUpdateWithoutReminderInput>, Prisma.NotificationUncheckedUpdateWithoutReminderInput>
+}
+
 export type NotificationCreateWithoutUserInput = {
   id?: string
   message: string
   read?: boolean
   createdAt?: Date | string
   task: Prisma.TaskCreateNestedOneWithoutNotificationsInput
+  reminder: Prisma.ReminderCreateNestedOneWithoutNotificationInput
 }
 
 export type NotificationUncheckedCreateWithoutUserInput = {
   id?: string
   taskId: string
+  reminderId: string
   message: string
   read?: boolean
   createdAt?: Date | string
@@ -473,6 +536,7 @@ export type NotificationScalarWhereInput = {
   id?: Prisma.StringFilter<"Notification"> | string
   userId?: Prisma.StringFilter<"Notification"> | string
   taskId?: Prisma.StringFilter<"Notification"> | string
+  reminderId?: Prisma.StringFilter<"Notification"> | string
   message?: Prisma.StringFilter<"Notification"> | string
   read?: Prisma.BoolFilter<"Notification"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Notification"> | Date | string
@@ -484,11 +548,13 @@ export type NotificationCreateWithoutTaskInput = {
   read?: boolean
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutNotificationsInput
+  reminder: Prisma.ReminderCreateNestedOneWithoutNotificationInput
 }
 
 export type NotificationUncheckedCreateWithoutTaskInput = {
   id?: string
   userId: string
+  reminderId: string
   message: string
   read?: boolean
   createdAt?: Date | string
@@ -519,9 +585,62 @@ export type NotificationUpdateManyWithWhereWithoutTaskInput = {
   data: Prisma.XOR<Prisma.NotificationUpdateManyMutationInput, Prisma.NotificationUncheckedUpdateManyWithoutTaskInput>
 }
 
+export type NotificationCreateWithoutReminderInput = {
+  id?: string
+  message: string
+  read?: boolean
+  createdAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutNotificationsInput
+  task: Prisma.TaskCreateNestedOneWithoutNotificationsInput
+}
+
+export type NotificationUncheckedCreateWithoutReminderInput = {
+  id?: string
+  userId: string
+  taskId: string
+  message: string
+  read?: boolean
+  createdAt?: Date | string
+}
+
+export type NotificationCreateOrConnectWithoutReminderInput = {
+  where: Prisma.NotificationWhereUniqueInput
+  create: Prisma.XOR<Prisma.NotificationCreateWithoutReminderInput, Prisma.NotificationUncheckedCreateWithoutReminderInput>
+}
+
+export type NotificationUpsertWithoutReminderInput = {
+  update: Prisma.XOR<Prisma.NotificationUpdateWithoutReminderInput, Prisma.NotificationUncheckedUpdateWithoutReminderInput>
+  create: Prisma.XOR<Prisma.NotificationCreateWithoutReminderInput, Prisma.NotificationUncheckedCreateWithoutReminderInput>
+  where?: Prisma.NotificationWhereInput
+}
+
+export type NotificationUpdateToOneWithWhereWithoutReminderInput = {
+  where?: Prisma.NotificationWhereInput
+  data: Prisma.XOR<Prisma.NotificationUpdateWithoutReminderInput, Prisma.NotificationUncheckedUpdateWithoutReminderInput>
+}
+
+export type NotificationUpdateWithoutReminderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  read?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutNotificationsNestedInput
+  task?: Prisma.TaskUpdateOneRequiredWithoutNotificationsNestedInput
+}
+
+export type NotificationUncheckedUpdateWithoutReminderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  taskId?: Prisma.StringFieldUpdateOperationsInput | string
+  message?: Prisma.StringFieldUpdateOperationsInput | string
+  read?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type NotificationCreateManyUserInput = {
   id?: string
   taskId: string
+  reminderId: string
   message: string
   read?: boolean
   createdAt?: Date | string
@@ -533,11 +652,13 @@ export type NotificationUpdateWithoutUserInput = {
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   task?: Prisma.TaskUpdateOneRequiredWithoutNotificationsNestedInput
+  reminder?: Prisma.ReminderUpdateOneRequiredWithoutNotificationNestedInput
 }
 
 export type NotificationUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   taskId?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -546,6 +667,7 @@ export type NotificationUncheckedUpdateWithoutUserInput = {
 export type NotificationUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   taskId?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -554,6 +676,7 @@ export type NotificationUncheckedUpdateManyWithoutUserInput = {
 export type NotificationCreateManyTaskInput = {
   id?: string
   userId: string
+  reminderId: string
   message: string
   read?: boolean
   createdAt?: Date | string
@@ -565,11 +688,13 @@ export type NotificationUpdateWithoutTaskInput = {
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutNotificationsNestedInput
+  reminder?: Prisma.ReminderUpdateOneRequiredWithoutNotificationNestedInput
 }
 
 export type NotificationUncheckedUpdateWithoutTaskInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -578,6 +703,7 @@ export type NotificationUncheckedUpdateWithoutTaskInput = {
 export type NotificationUncheckedUpdateManyWithoutTaskInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  reminderId?: Prisma.StringFieldUpdateOperationsInput | string
   message?: Prisma.StringFieldUpdateOperationsInput | string
   read?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -589,68 +715,80 @@ export type NotificationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   id?: boolean
   userId?: boolean
   taskId?: boolean
+  reminderId?: boolean
   message?: boolean
   read?: boolean
   createdAt?: boolean
-  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
+  reminder?: boolean | Prisma.ReminderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["notification"]>
 
 export type NotificationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   taskId?: boolean
+  reminderId?: boolean
   message?: boolean
   read?: boolean
   createdAt?: boolean
-  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
+  reminder?: boolean | Prisma.ReminderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["notification"]>
 
 export type NotificationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   userId?: boolean
   taskId?: boolean
+  reminderId?: boolean
   message?: boolean
   read?: boolean
   createdAt?: boolean
-  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
+  reminder?: boolean | Prisma.ReminderDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["notification"]>
 
 export type NotificationSelectScalar = {
   id?: boolean
   userId?: boolean
   taskId?: boolean
+  reminderId?: boolean
   message?: boolean
   read?: boolean
   createdAt?: boolean
 }
 
-export type NotificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "taskId" | "message" | "read" | "createdAt", ExtArgs["result"]["notification"]>
+export type NotificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "taskId" | "reminderId" | "message" | "read" | "createdAt", ExtArgs["result"]["notification"]>
 export type NotificationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
+  reminder?: boolean | Prisma.ReminderDefaultArgs<ExtArgs>
 }
 export type NotificationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
+  reminder?: boolean | Prisma.ReminderDefaultArgs<ExtArgs>
 }
 export type NotificationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
+  reminder?: boolean | Prisma.ReminderDefaultArgs<ExtArgs>
 }
 
 export type $NotificationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Notification"
   objects: {
-    task: Prisma.$TaskPayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs>
+    task: Prisma.$TaskPayload<ExtArgs>
+    reminder: Prisma.$ReminderPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     userId: string
     taskId: string
+    reminderId: string
     message: string
     read: boolean
     createdAt: Date
@@ -1048,8 +1186,9 @@ readonly fields: NotificationFieldRefs;
  */
 export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  task<T extends Prisma.TaskDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TaskDefaultArgs<ExtArgs>>): Prisma.Prisma__TaskClient<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  task<T extends Prisma.TaskDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TaskDefaultArgs<ExtArgs>>): Prisma.Prisma__TaskClient<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  reminder<T extends Prisma.ReminderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ReminderDefaultArgs<ExtArgs>>): Prisma.Prisma__ReminderClient<runtime.Types.Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1082,6 +1221,7 @@ export interface NotificationFieldRefs {
   readonly id: Prisma.FieldRef<"Notification", 'String'>
   readonly userId: Prisma.FieldRef<"Notification", 'String'>
   readonly taskId: Prisma.FieldRef<"Notification", 'String'>
+  readonly reminderId: Prisma.FieldRef<"Notification", 'String'>
   readonly message: Prisma.FieldRef<"Notification", 'String'>
   readonly read: Prisma.FieldRef<"Notification", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Notification", 'DateTime'>

@@ -262,6 +262,7 @@ export type ReminderWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Reminder"> | Date | string
   task?: Prisma.XOR<Prisma.TaskScalarRelationFilter, Prisma.TaskWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  notification?: Prisma.XOR<Prisma.NotificationNullableScalarRelationFilter, Prisma.NotificationWhereInput> | null
 }
 
 export type ReminderOrderByWithRelationInput = {
@@ -277,6 +278,7 @@ export type ReminderOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   task?: Prisma.TaskOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
+  notification?: Prisma.NotificationOrderByWithRelationInput
 }
 
 export type ReminderWhereUniqueInput = Prisma.AtLeast<{
@@ -295,6 +297,7 @@ export type ReminderWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Reminder"> | Date | string
   task?: Prisma.XOR<Prisma.TaskScalarRelationFilter, Prisma.TaskWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  notification?: Prisma.XOR<Prisma.NotificationNullableScalarRelationFilter, Prisma.NotificationWhereInput> | null
 }, "id">
 
 export type ReminderOrderByWithAggregationInput = {
@@ -342,6 +345,7 @@ export type ReminderCreateInput = {
   createdAt?: Date | string
   task: Prisma.TaskCreateNestedOneWithoutRemindersInput
   user: Prisma.UserCreateNestedOneWithoutRemindersInput
+  notification?: Prisma.NotificationCreateNestedOneWithoutReminderInput
 }
 
 export type ReminderUncheckedCreateInput = {
@@ -355,6 +359,7 @@ export type ReminderUncheckedCreateInput = {
   lastError?: string | null
   scheduledAt: Date | string
   createdAt?: Date | string
+  notification?: Prisma.NotificationUncheckedCreateNestedOneWithoutReminderInput
 }
 
 export type ReminderUpdateInput = {
@@ -368,6 +373,7 @@ export type ReminderUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   task?: Prisma.TaskUpdateOneRequiredWithoutRemindersNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutRemindersNestedInput
+  notification?: Prisma.NotificationUpdateOneWithoutReminderNestedInput
 }
 
 export type ReminderUncheckedUpdateInput = {
@@ -381,6 +387,7 @@ export type ReminderUncheckedUpdateInput = {
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notification?: Prisma.NotificationUncheckedUpdateOneWithoutReminderNestedInput
 }
 
 export type ReminderCreateManyInput = {
@@ -479,6 +486,11 @@ export type ReminderSumOrderByAggregateInput = {
   attempts?: Prisma.SortOrder
 }
 
+export type ReminderScalarRelationFilter = {
+  is?: Prisma.ReminderWhereInput
+  isNot?: Prisma.ReminderWhereInput
+}
+
 export type ReminderCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.ReminderCreateWithoutUserInput, Prisma.ReminderUncheckedCreateWithoutUserInput> | Prisma.ReminderCreateWithoutUserInput[] | Prisma.ReminderUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.ReminderCreateOrConnectWithoutUserInput | Prisma.ReminderCreateOrConnectWithoutUserInput[]
@@ -575,6 +587,20 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type ReminderCreateNestedOneWithoutNotificationInput = {
+  create?: Prisma.XOR<Prisma.ReminderCreateWithoutNotificationInput, Prisma.ReminderUncheckedCreateWithoutNotificationInput>
+  connectOrCreate?: Prisma.ReminderCreateOrConnectWithoutNotificationInput
+  connect?: Prisma.ReminderWhereUniqueInput
+}
+
+export type ReminderUpdateOneRequiredWithoutNotificationNestedInput = {
+  create?: Prisma.XOR<Prisma.ReminderCreateWithoutNotificationInput, Prisma.ReminderUncheckedCreateWithoutNotificationInput>
+  connectOrCreate?: Prisma.ReminderCreateOrConnectWithoutNotificationInput
+  upsert?: Prisma.ReminderUpsertWithoutNotificationInput
+  connect?: Prisma.ReminderWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ReminderUpdateToOneWithWhereWithoutNotificationInput, Prisma.ReminderUpdateWithoutNotificationInput>, Prisma.ReminderUncheckedUpdateWithoutNotificationInput>
+}
+
 export type ReminderCreateWithoutUserInput = {
   id?: string
   daysBefore: number
@@ -585,6 +611,7 @@ export type ReminderCreateWithoutUserInput = {
   scheduledAt: Date | string
   createdAt?: Date | string
   task: Prisma.TaskCreateNestedOneWithoutRemindersInput
+  notification?: Prisma.NotificationCreateNestedOneWithoutReminderInput
 }
 
 export type ReminderUncheckedCreateWithoutUserInput = {
@@ -597,6 +624,7 @@ export type ReminderUncheckedCreateWithoutUserInput = {
   lastError?: string | null
   scheduledAt: Date | string
   createdAt?: Date | string
+  notification?: Prisma.NotificationUncheckedCreateNestedOneWithoutReminderInput
 }
 
 export type ReminderCreateOrConnectWithoutUserInput = {
@@ -650,6 +678,7 @@ export type ReminderCreateWithoutTaskInput = {
   scheduledAt: Date | string
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutRemindersInput
+  notification?: Prisma.NotificationCreateNestedOneWithoutReminderInput
 }
 
 export type ReminderUncheckedCreateWithoutTaskInput = {
@@ -662,6 +691,7 @@ export type ReminderUncheckedCreateWithoutTaskInput = {
   lastError?: string | null
   scheduledAt: Date | string
   createdAt?: Date | string
+  notification?: Prisma.NotificationUncheckedCreateNestedOneWithoutReminderInput
 }
 
 export type ReminderCreateOrConnectWithoutTaskInput = {
@@ -689,6 +719,74 @@ export type ReminderUpdateManyWithWhereWithoutTaskInput = {
   data: Prisma.XOR<Prisma.ReminderUpdateManyMutationInput, Prisma.ReminderUncheckedUpdateManyWithoutTaskInput>
 }
 
+export type ReminderCreateWithoutNotificationInput = {
+  id?: string
+  daysBefore: number
+  channel: string
+  sent?: boolean
+  attempts?: number
+  lastError?: string | null
+  scheduledAt: Date | string
+  createdAt?: Date | string
+  task: Prisma.TaskCreateNestedOneWithoutRemindersInput
+  user: Prisma.UserCreateNestedOneWithoutRemindersInput
+}
+
+export type ReminderUncheckedCreateWithoutNotificationInput = {
+  id?: string
+  taskId: string
+  userId: string
+  daysBefore: number
+  channel: string
+  sent?: boolean
+  attempts?: number
+  lastError?: string | null
+  scheduledAt: Date | string
+  createdAt?: Date | string
+}
+
+export type ReminderCreateOrConnectWithoutNotificationInput = {
+  where: Prisma.ReminderWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReminderCreateWithoutNotificationInput, Prisma.ReminderUncheckedCreateWithoutNotificationInput>
+}
+
+export type ReminderUpsertWithoutNotificationInput = {
+  update: Prisma.XOR<Prisma.ReminderUpdateWithoutNotificationInput, Prisma.ReminderUncheckedUpdateWithoutNotificationInput>
+  create: Prisma.XOR<Prisma.ReminderCreateWithoutNotificationInput, Prisma.ReminderUncheckedCreateWithoutNotificationInput>
+  where?: Prisma.ReminderWhereInput
+}
+
+export type ReminderUpdateToOneWithWhereWithoutNotificationInput = {
+  where?: Prisma.ReminderWhereInput
+  data: Prisma.XOR<Prisma.ReminderUpdateWithoutNotificationInput, Prisma.ReminderUncheckedUpdateWithoutNotificationInput>
+}
+
+export type ReminderUpdateWithoutNotificationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  daysBefore?: Prisma.IntFieldUpdateOperationsInput | number
+  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  task?: Prisma.TaskUpdateOneRequiredWithoutRemindersNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutRemindersNestedInput
+}
+
+export type ReminderUncheckedUpdateWithoutNotificationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  taskId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  daysBefore?: Prisma.IntFieldUpdateOperationsInput | number
+  channel?: Prisma.StringFieldUpdateOperationsInput | string
+  sent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  attempts?: Prisma.IntFieldUpdateOperationsInput | number
+  lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ReminderCreateManyUserInput = {
   id?: string
   taskId: string
@@ -711,6 +809,7 @@ export type ReminderUpdateWithoutUserInput = {
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   task?: Prisma.TaskUpdateOneRequiredWithoutRemindersNestedInput
+  notification?: Prisma.NotificationUpdateOneWithoutReminderNestedInput
 }
 
 export type ReminderUncheckedUpdateWithoutUserInput = {
@@ -723,6 +822,7 @@ export type ReminderUncheckedUpdateWithoutUserInput = {
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notification?: Prisma.NotificationUncheckedUpdateOneWithoutReminderNestedInput
 }
 
 export type ReminderUncheckedUpdateManyWithoutUserInput = {
@@ -759,6 +859,7 @@ export type ReminderUpdateWithoutTaskInput = {
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutRemindersNestedInput
+  notification?: Prisma.NotificationUpdateOneWithoutReminderNestedInput
 }
 
 export type ReminderUncheckedUpdateWithoutTaskInput = {
@@ -771,6 +872,7 @@ export type ReminderUncheckedUpdateWithoutTaskInput = {
   lastError?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   scheduledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notification?: Prisma.NotificationUncheckedUpdateOneWithoutReminderNestedInput
 }
 
 export type ReminderUncheckedUpdateManyWithoutTaskInput = {
@@ -800,6 +902,7 @@ export type ReminderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdAt?: boolean
   task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  notification?: boolean | Prisma.Reminder$notificationArgs<ExtArgs>
 }, ExtArgs["result"]["reminder"]>
 
 export type ReminderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -849,6 +952,7 @@ export type ReminderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type ReminderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  notification?: boolean | Prisma.Reminder$notificationArgs<ExtArgs>
 }
 export type ReminderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
@@ -864,6 +968,7 @@ export type $ReminderPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     task: Prisma.$TaskPayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs>
+    notification: Prisma.$NotificationPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1272,6 +1377,7 @@ export interface Prisma__ReminderClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   task<T extends Prisma.TaskDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TaskDefaultArgs<ExtArgs>>): Prisma.Prisma__TaskClient<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  notification<T extends Prisma.Reminder$notificationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reminder$notificationArgs<ExtArgs>>): Prisma.Prisma__NotificationClient<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1707,6 +1813,25 @@ export type ReminderDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Reminders to delete.
    */
   limit?: number
+}
+
+/**
+ * Reminder.notification
+ */
+export type Reminder$notificationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
 }
 
 /**
