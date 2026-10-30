@@ -1,16 +1,21 @@
 "use client";
 
-import { LayoutDashboard, ClipboardList, TrendingUp, Wrench } from "lucide-react";
+import { LayoutDashboard, ClipboardList, Bell, Wrench } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function SideBar() {
+export default function SideBar({
+    unreadNotificationCount,
+}: {
+    unreadNotificationCount: number;
+}) {
     const pathname = usePathname();
+    const notificationBadge = unreadNotificationCount > 99 ? "99+" : unreadNotificationCount;
 
     const Navigations = [
         { name: 'Dashboard', Icon: LayoutDashboard, link: "/dashboard" },
         { name: 'Tasks', Icon: ClipboardList, link: "/dashboard/tasks" },
-        { name: 'Progress', Icon: TrendingUp, link: "/dashboard/progress" },
+        { name: 'Notifications', Icon: Bell, link: "/dashboard/notifications" },
         { name: 'Tools', Icon: Wrench, link: "/dashboard/tools" },
     ];
 
@@ -34,6 +39,11 @@ export default function SideBar() {
                         >
                             <item.Icon className="w-[18px] h-[18px]" />
                             <span>{item.name}</span>
+                            {item.name === "Notifications" && unreadNotificationCount > 0 && (
+                                <span className="ml-auto min-w-4 h-4 px-1 bg-urgent text-white text-[10px] leading-4 text-center rounded-full">
+                                    {notificationBadge}
+                                </span>
+                            )}
                         </Link>
                     );
                 })}
