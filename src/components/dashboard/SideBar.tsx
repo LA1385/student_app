@@ -31,7 +31,7 @@ export default function SideBar({
                         <Link 
                             key={index} 
                             href={item.link}
-                            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-text-secondary cursor-pointer hover:bg-bg-input hover:text-text transition-colors duration-150 mb-1 relative ${
+                            className={`relative mb-1 flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-text-secondary transition-colors duration-150 hover:bg-bg-input hover:text-text focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 ${
                                 isActive 
                                     ? "bg-primary/10 text-primary font-medium after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-1 after:h-6 after:bg-primary after:rounded-full" 
                                     : ""
@@ -40,7 +40,7 @@ export default function SideBar({
                             <item.Icon className="w-[18px] h-[18px]" />
                             <span>{item.name}</span>
                             {item.name === "Notifications" && unreadNotificationCount > 0 && (
-                                <span className="ml-auto min-w-4 h-4 px-1 bg-urgent text-white text-[10px] leading-4 text-center rounded-full">
+                                <span className="ml-auto min-w-4 h-4 rounded-full bg-urgent px-1 text-center text-[10px] leading-4 text-primary-foreground">
                                     {notificationBadge}
                                 </span>
                             )}

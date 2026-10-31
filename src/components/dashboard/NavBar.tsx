@@ -30,11 +30,11 @@ export default function NavBar({
                 <Link
                     href="/dashboard/notifications"
                     aria-label={notificationLabel}
-                    className="relative text-text-muted hover:text-text cursor-pointer transition-colors p-1.5 rounded-lg hover:bg-bg-input"
+                    className="relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg p-1.5 text-text-muted transition-colors hover:bg-bg-input hover:text-text focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
                 >
                     <Bell className="w-[18px] h-[18px]" />
                     {unreadNotificationCount > 0 && (
-                        <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-urgent text-white text-[10px] leading-4 text-center rounded-full ring-2 ring-bg-card">
+                        <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-urgent text-center text-[10px] leading-4 text-primary-foreground ring-2 ring-bg-card">
                             {notificationBadge}
                         </span>
                     )}

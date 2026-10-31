@@ -28,12 +28,12 @@ export default function BottomNav({ unreadNotificationCount }: { unreadNotificat
                         aria-label={isNotifications
                             ? `Notifications, ${unreadNotificationCount} unread`
                             : item.name}
-                        className="flex flex-col items-center justify-center flex-1 gap-1 py-2 cursor-pointer"
+                        className="flex min-h-11 flex-1 flex-col items-center justify-center gap-1 py-2 cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
                     >
                         <div className={`relative ${isActive ? "bg-primary rounded-xl p-2" : "p-2"}`}>
-                            <item.Icon className={isActive ? "text-white w-5 h-5" : "text-text-muted w-5 h-5"} />
+                            <item.Icon className={isActive ? "text-primary-foreground w-5 h-5" : "text-text-muted w-5 h-5"} />
                             {isNotifications && unreadNotificationCount > 0 && (
-                                <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-urgent text-white text-[10px] leading-4 text-center rounded-full ring-2 ring-bg-card">
+                                <span className="absolute -top-1 -right-1 min-w-4 h-4 rounded-full bg-urgent px-1 text-center text-[10px] leading-4 text-primary-foreground ring-2 ring-bg-card">
                                     {notificationBadge}
                                 </span>
                             )}
