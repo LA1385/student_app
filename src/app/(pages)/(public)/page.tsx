@@ -18,8 +18,8 @@ export default async function Home() {
         },
         {
             icon: 'chart',
-            title: 'Track your Progress',
-            description: 'See your weekly completion rate, overdue tasks and upcoming deadlines at a glance on your personal dashboard.'
+            title: 'Stay on top of Notifications',
+            description: 'Get timely notifications about overdue tasks and upcoming deadlines at a glance on your personal dashboard.'
         },
         {
             icon: 'Tools',
