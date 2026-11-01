@@ -1,4 +1,4 @@
-import { Calculator, Clock, Calendar, AlertCircle, Plus,FileArchive, RefreshCw, FilePlus2 } from "lucide-react";
+import { Clock, Calendar, AlertCircle, Plus } from "lucide-react";
 import MetricCard from "@/components/dashboard/MetricCard";
 import TaskCard from "@/components/dashboard/TaskCard";
 import ToolCard from "@/components/dashboard/ToolCard";
@@ -7,6 +7,7 @@ import TabSwitcher from "@/components/dashboard/TabSwitcher";
 import { auth } from "@/lib/auth";
 import { getTasks, getTaskSummary } from "@/lib/queries";
 import { redirect } from "next/navigation";
+import { DASHBOARD_TOOLS_LIMIT, TOOLS } from "@/lib/tools";
 
 
 
@@ -21,13 +22,6 @@ export default async function Dashboard() {
         getTasks(userId),
         getTaskSummary(userId)
     ]);
-
-    const Tools = [
-        { icon: <Calculator className=" text-primary"/>, name: 'CGPA Calculator', href: '/tools/calculator' },
-        { icon: <RefreshCw className=" text-primary"/>, name: 'Converter', href: '/tools/converter' },
-        { icon: <FilePlus2 className=" text-primary"/>, name: 'Merge Files', href: '/tools/file-compression' },
-        { icon: <FileArchive className=" text-primary" />, name: 'File Compression', href: '/tools/zip' },
-    ]
 
     return (
         <div className="bg-bg-page">
@@ -89,9 +83,9 @@ export default async function Dashboard() {
                             </Link>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
-                            {Tools.map((tool, index) => (
+                            {TOOLS.slice(0, DASHBOARD_TOOLS_LIMIT).map((tool) => (
                                 <ToolCard
-                                    key={index}
+                                    key={tool.id}
                                     icon={tool.icon}
                                     name={tool.name}
                                     href={tool.href}
@@ -140,9 +134,9 @@ export default async function Dashboard() {
                             </Link>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
-                            {Tools.map((tool, index) => (
+                            {TOOLS.slice(0, DASHBOARD_TOOLS_LIMIT).map((tool) => (
                                 <ToolCard
-                                    key={index}
+                                    key={tool.id}
                                     icon={tool.icon}
                                     name={tool.name}
                                     href={tool.href}
@@ -155,4 +149,3 @@ export default async function Dashboard() {
         </div>
     )
 }
-
