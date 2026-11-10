@@ -1,6 +1,10 @@
 import { requireUser } from "@/lib/auth_helpers";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+    getNotifications,
+    getUnreadNotificationCount,
+} from "@/lib/notifications";
 
 // Get Method for notifications
 export async function GET() {
@@ -10,15 +14,10 @@ export async function GET() {
     }
 
     try {
-        const notifications = await prisma.notification.findMany({
-            where: { userId: user.id },
-            orderBy: { createdAt: "desc" },
-            take: 20,
-        });
-
-        const unreadCount = await prisma.notification.count({
-            where: { userId: user.id, read: false }
-        });
+        const [notifications, unreadCount] = await Promise.all([
+            getNotifications(user.id),
+            getUnreadNotificationCount(user.id),
+        ]);
 
         return NextResponse.json({ notifications, unreadCount }, { status: 200 });
     }
