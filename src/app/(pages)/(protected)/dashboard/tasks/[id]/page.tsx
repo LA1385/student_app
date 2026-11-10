@@ -16,8 +16,10 @@ export default async function TaskIdPage({ params }: { params: Promise<{ id: str
         console.error("Task ID is missing in the parameters.");
         return notFound();
     }
-    const reminders = await getTaskReminders(taskId, session.user.id);
-    const task = await getTaskById(taskId, session.user.id);
+    const [reminders, task] = await Promise.all([
+        getTaskReminders(taskId, session.user.id),
+        getTaskById(taskId, session.user.id),
+    ]);
     if (!task) {
         console.error(`Task with ID ${taskId} not found for user ${session.user.id}.`);
         return notFound();
