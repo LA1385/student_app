@@ -20,14 +20,7 @@ type TaskCardProps = {
 
 export default function TaskCard({taskId, title, type, dueDate, priority, status, category, now, onComplete,
 }: TaskCardProps) {
-    const borderMap: Record<string, string> = {
-        Overdue: "border-l-urgent",
-        Completed: "border-l-done",
-        Pending: "border-l-upcoming",
-    };
-    const statusKey = status.toUpperCase();
-    const borderClass = borderMap[statusKey] || "border-l-border";
-    const isCompleted = statusKey === "Completed";
+    const isCompleted = status.toLowerCase() === "completed";
 
     const router = useRouter();
     const [isDisabled, setIsDisabled] = useState(false);
@@ -63,7 +56,7 @@ export default function TaskCard({taskId, title, type, dueDate, priority, status
     };
 
     return (
-        <div className={`bg-bg-card border border-border border-l-4 ${borderClass} rounded-xl rounded-l-none md:border-2 md:rounded-l-xl p-4 flex flex-col gap-2 hover:shadow-sm transition-shadow duration-150`}>
+        <div className="bg-bg-card border border-border rounded-xl md:border-2 p-4 flex flex-col gap-2 hover:shadow-sm transition-shadow duration-150">
             <div className="flex justify-between items-start gap-4">
                 <div className="flex items-center gap-2">
                     <PriorityBadge priority={priority} />
