@@ -1,13 +1,11 @@
-import { Clock, Calendar, AlertCircle, Plus } from "lucide-react";
+import { Clock, Calendar, AlertCircle } from "lucide-react";
 import MetricCard from "@/components/dashboard/MetricCard";
-import TaskCard from "@/components/dashboard/TaskCard";
-import ToolCard from "@/components/dashboard/ToolCard";
-import Link from "next/link";
+import DashboardTaskList from "@/components/dashboard/DashboardTaskList";
+import DashboardToolList from "@/components/dashboard/DashboardToolList";
 import TabSwitcher from "@/components/dashboard/TabSwitcher";
 import { auth } from "@/lib/auth";
 import { getTasks, getTaskSummary } from "@/lib/queries";
 import { redirect } from "next/navigation";
-import { DASHBOARD_TOOLS_LIMIT, TOOLS } from "@/lib/tools";
 
 
 
@@ -47,103 +45,18 @@ export default async function Dashboard() {
                 </div>
 
                 {/* Tab switcher (mobile only) */}
-                <TabSwitcher tasks={
-                    <div>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold text-text">Active Tasks</h2>
-                            <Link href="/dashboard/tasks/new" className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer border-none shadow-sm">
-                                <Plus className="w-4 h-4" />
-                                <span>Add</span>
-                            </Link>
-                        </div>
-                        <div className="flex flex-col gap-3">
-                            {tasks.map((task) => (
-                                <Link key={task.id} href={` /dashboard/tasks/${task.id}`}>
-                                <TaskCard 
-                                    key={task.id}
-                                    taskId={task.id}
-                                    title={task.title}
-                                    type={task.type}
-                                    dueDate={task.dueDate.toISOString()}
-                                    priority={task.priority}
-                                    category={task.category?? ""}
-                                    status={task.status}
-                                    now={now}
-                                />
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                } tools={
-                    <div>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold text-text">Student Tools</h2>
-                            <Link href="/dashboard/tools" className="text-sm text-primary font-medium hover:underline">
-                                View All
-                            </Link>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                            {TOOLS.slice(0, DASHBOARD_TOOLS_LIMIT).map((tool) => (
-                                <ToolCard
-                                    key={tool.id}
-                                    icon={tool.icon}
-                                    name={tool.name}
-                                    href={tool.href}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                } />
+                <TabSwitcher
+                    tasks={<DashboardTaskList tasks={tasks} now={now} />}
+                    tools={<DashboardToolList />}
+                />
 
                 {/* Desktop View (always rendered side-by-side, hidden on mobile) */}
                 <div className="hidden md:grid md:grid-cols-[1fr_360px] md:gap-6">
                     {/* Tasks Column */}
-                    <div>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold text-text">Active Tasks</h2>
-                            <Link href="/dashboard/tasks/new" className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors cursor-pointer border-none shadow-sm">
-                                <Plus className="w-4 h-4" />
-                                <span>Add</span>
-                            </Link>
-                        </div>
-                        <div className="flex flex-col gap-3">
-                            {tasks.map((task) => (
-                                <Link key={task.id} href={`/dashboard/tasks/${task.id}`}>
-                                <TaskCard
-                                    key={task.id}
-                                    taskId={task.id}
-                                    title={task.title}
-                                    type={task.type}
-                                    dueDate={task.dueDate.toISOString()}
-                                    priority={task.priority}
-                                    category={task.category ?? ""}
-                                    status={task.status}
-                                    now={now}
-                                    />
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
+                    <DashboardTaskList tasks={tasks} now={now} />
 
                     {/* Tools Column */}
-                    <div>
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-bold text-text">Student Tools</h2>
-                            <Link href="/dashboard/tools" className="text-sm text-primary font-medium hover:underline">
-                                View All
-                            </Link>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                            {TOOLS.slice(0, DASHBOARD_TOOLS_LIMIT).map((tool) => (
-                                <ToolCard
-                                    key={tool.id}
-                                    icon={tool.icon}
-                                    name={tool.name}
-                                    href={tool.href}
-                                />
-                            ))}
-                        </div>
-                    </div>
+                    <DashboardToolList />
                 </div>
             </div>
         </div>
