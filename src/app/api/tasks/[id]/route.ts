@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getTaskById } from "@/lib/queries";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@generated/prisma/client";
+import { validateTaskUpdateInput } from "@/lib/validators/taskValidators";
 
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }){
@@ -36,7 +37,16 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     const { id: taskId } = await params;
 
     try {
-        const body = await request.json();
+        const body: unknown = await request.json();
+        const validation = validateTaskUpdateInput(body);
+        if ("error" in validation) {
+            return NextResponse.json(
+                { error: validation.error },
+                { status: 400 }
+            );
+        }
+        const update = validation.data;
+
         // Find the task and its reminders.
         const existingTask = await prisma.task.findFirst({
             where: { id: taskId, userId: user.id, },
@@ -52,16 +62,16 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
         // Determine the updated due date.
         // != null covers both null and undefined, so "no dueDate sent" means "no change".
-        const newDueDate = body.dueDate != null ? new Date(body.dueDate) : existingTask.dueDate;
+        const newDueDate = update.dueDate != null ? new Date(update.dueDate) : existingTask.dueDate;
 
         const dueDateChanged = newDueDate.getTime() !== existingTask.dueDate.getTime();
 
         // Ensure the reminder belongs to this task.
         const targetReminder = existingTask.reminders.find(
-            (reminder) => reminder.id === body.reminderId
+            (reminder) => reminder.id === update.reminderId
         );
 
-        if (body.reminderId && !targetReminder) {
+        if (update.reminderId && !targetReminder) {
             return NextResponse.json(
                 { error: "Reminder not found for this task" },
                 { status: 404 }
@@ -74,21 +84,21 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
             await tx.task.update({
                 where: { id: taskId, userId: user.id, },
                 data: {
-                    title: body.title ?? undefined,
-                    type: body.type ?? undefined,
-                    dueDate: body.dueDate != null ? newDueDate : undefined,
-                    priority: body.priority ?? undefined,
-                    status: body.status ?? undefined,
+                    title: update.title ?? undefined,
+                    type: update.type ?? undefined,
+                    dueDate: update.dueDate != null ? newDueDate : undefined,
+                    priority: update.priority ?? undefined,
+                    status: update.status ?? undefined,
                 },
             });
 
             // 2. Update affected reminders.
             for (const reminder of existingTask.reminders) {
-                const isTargetReminder = reminder.id === body.reminderId;
+                const isTargetReminder = reminder.id === update.reminderId;
 
-                const newDaysBefore = isTargetReminder ? body.daysBefore ?? reminder.daysBefore : reminder.daysBefore;
+                const newDaysBefore = isTargetReminder ? update.daysBefore ?? reminder.daysBefore : reminder.daysBefore;
 
-                const newChannel = isTargetReminder ? body.channel ?? reminder.channel : reminder.channel;
+                const newChannel = isTargetReminder ? update.channel ?? reminder.channel : reminder.channel;
 
                 const timingChanged = dueDateChanged || newDaysBefore !== reminder.daysBefore;
 

@@ -57,6 +57,9 @@ const formatDate = (date: Date) =>
         timeStyle: "short",
     });
 
+const formatSubject = (title: string) =>
+    `Reminder: ${title.replace(/[\r\n]/g, " ").slice(0, 200)}`;
+
 export const processDueReminders = async (): Promise<ReminderRunSummary> => {
     // Overlap guard: if a run is still going, don't start another
     if (isRunning) {
@@ -107,7 +110,7 @@ export const processDueReminders = async (): Promise<ReminderRunSummary> => {
 
                     await sendEmail(
                         reminder.user.email,
-                        `Reminder: ${reminder.task.title}`,
+                        formatSubject(reminder.task.title),
                         `<p>${escapeHtml(message)}</p>`
                     );
                     summary.sent++;
