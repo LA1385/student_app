@@ -4,14 +4,19 @@ import SideBar from "@/components/dashboard/SideBar";
 import NotificationRefresh from "@/components/dashboard/NotificationRefresh";
 import { requireUser } from "@/lib/auth_helpers";
 import { getUnreadNotificationCount } from "@/lib/notifications";
+import { redirect } from "next/navigation";
 
 export default async function ProtectedLayout({
     children}: {
     children: React.ReactNode}) {
         const user = await requireUser();
-        const unreadNotificationCount = user?.id
-            ? await getUnreadNotificationCount(user.id)
-            : 0;
+    if (!user) {
+        redirect("/");
+    }
+
+    const unreadNotificationCount = user?.id
+        ? await getUnreadNotificationCount(user.id)
+        : 0;
 
         return (
             <div className="min-h-screen bg-bg-page text-text">

@@ -15,7 +15,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const { id: taskId } = await params;
 
     const task = await getTaskById(taskId, userId);
-    console.log("Fetched task:", task); // Debugging line to check the fetched task
     
     if (!task) {
         return NextResponse.json({ error: "Task not found" }, { status: 404 });
@@ -107,7 +106,11 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
                 if (!timingChanged && !channelChanged) continue;
                 // Update reminder settings.
                 await tx.reminder.update({
-                    where: { id: reminder.id, },
+                    where: {
+                        id: reminder.id,
+                        taskId,
+                        userId: user.id,
+                    },
                     data: {
                         channel: newChannel,
                         daysBefore: newDaysBefore,
@@ -126,6 +129,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
                     await tx.notification.deleteMany({
                         where: {
                             reminderId: reminder.id,
+                            taskId,
+                            userId: user.id,
                         },
                     });
                 }
@@ -153,7 +158,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
             );
         }
 
-        console.error("Error updating task:", error);
+        console.error("Error updating task");
 
         return NextResponse.json(
             { error: "Error updating task" },
@@ -180,7 +185,7 @@ export async function DELETE(request : Request, { params } : { params: Promise<{
         if (error == "P2025") {
             return NextResponse.json({ error: "Task not found" }, { status: 404 });
         }
-        console.error("Error deleting task:", error);
+        console.error("Error deleting task");
         return NextResponse.json({ error: "Error deleting task" }, { status: 404 });
     }
 }
