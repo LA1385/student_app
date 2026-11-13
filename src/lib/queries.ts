@@ -40,9 +40,9 @@ export async function getTaskSummary(userId: string) {
 
         return { dueToday, dueThisWeek, completed };
 
-    } catch (error) {
-        console.error("Error fetching task summary:", error);
-        return { dueToday: 0, dueThisWeek: 0, completed: 0 };
+    } catch {
+        console.error("Error fetching task summary");
+        return null;
     }
 }
 

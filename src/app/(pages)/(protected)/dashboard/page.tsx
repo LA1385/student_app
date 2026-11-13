@@ -25,24 +25,33 @@ export default async function Dashboard() {
         <div className="bg-bg-page">
             <div className="p-4 md:p-6">
                 {/* Metric Cards Row */}
-                <div className="grid grid-cols-3 gap-3 mb-6">
-                    <MetricCard 
-                        label="Due Today" 
-                        value={taskSummary.dueToday}
-                        variant="highlighted" 
-                        icon={<Clock className="w-3 h-3 md:w-5 md:h-5" />} 
-                    />
-                    <MetricCard 
-                        label="This Week" 
-                        value={taskSummary.dueThisWeek} 
-                        icon={<Calendar className="w-3 h-3 md:w-5 md:h-5" />} 
-                    />
-                    <MetricCard 
-                        label="Completed" 
-                        value={taskSummary.completed} 
-                        icon={<AlertCircle className="w-3 h-3 md:w-5 md:h-5" />} 
-                    />
-                </div>
+                {taskSummary ? (
+                    <div className="grid grid-cols-3 gap-3 mb-6">
+                        <MetricCard
+                            label="Due Today"
+                            value={taskSummary.dueToday}
+                            variant="highlighted"
+                            icon={<Clock className="w-3 h-3 md:w-5 md:h-5" />}
+                        />
+                        <MetricCard
+                            label="This Week"
+                            value={taskSummary.dueThisWeek}
+                            icon={<Calendar className="w-3 h-3 md:w-5 md:h-5" />}
+                        />
+                        <MetricCard
+                            label="Completed"
+                            value={taskSummary.completed}
+                            icon={<AlertCircle className="w-3 h-3 md:w-5 md:h-5" />}
+                        />
+                    </div>
+                ) : (
+                    <div
+                        role="alert"
+                        className="mb-6 rounded-xl border border-urgent/30 bg-urgent/10 p-4 text-sm text-urgent"
+                    >
+                        Dashboard metrics are temporarily unavailable.
+                    </div>
+                )}
 
                 {/* Tab switcher (mobile only) */}
                 <TabSwitcher

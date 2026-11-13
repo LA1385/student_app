@@ -57,6 +57,9 @@ const formatDate = (date: Date) =>
         timeStyle: "short",
     });
 
+const formatSubject = (title: string) =>
+    `Reminder: ${title.replace(/[\r\n]/g, " ").slice(0, 200)}`;
+
 export const processDueReminders = async (): Promise<ReminderRunSummary> => {
     // Overlap guard: if a run is still going, don't start another
     if (isRunning) {
@@ -107,23 +110,25 @@ export const processDueReminders = async (): Promise<ReminderRunSummary> => {
 
                     await sendEmail(
                         reminder.user.email,
-                        `Reminder: ${reminder.task.title}`,
+                        formatSubject(reminder.task.title),
                         `<p>${escapeHtml(message)}</p>`
                     );
                     summary.sent++;
                 }
             }
-            catch (error) {
-                console.error(`Failed to deliver reminder ${reminder.id}:`, error);
+            catch {
+                console.error("Failed to deliver reminder");
                 summary.failed++;
 
                 await prisma.reminder.update({
                     where: { id: reminder.id },
                     data: {
                         attempts: { increment: 1 },
-                        lastError: error instanceof Error ? error.message : String(error)
+                        lastError: "Reminder delivery failed"
                     }
-                }).catch(console.error);
+                }).catch(() => {
+                    console.error("Failed to record reminder delivery failure");
+                });
 
                 continue;
             }
@@ -135,9 +140,9 @@ export const processDueReminders = async (): Promise<ReminderRunSummary> => {
                     data: { sent: true, attempts: { increment: 1 } }
                 });
             }
-            catch (error) {
+            catch {
                 summary.unmarked++;
-                console.error(`Delivered but reminder ${reminder.id} was not marked as sent:`, error);
+                console.error("Delivered reminder was not marked as sent");
             }
         }
 
