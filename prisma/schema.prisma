@@ -83,6 +83,8 @@ model Reminder {
   channel     String
   sent        Boolean  @default(false)
   attempts    Int      @default(0)
+  emailSentAt DateTime?
+  inAppSentAt DateTime?
   lastError   String?
   scheduledAt DateTime
   createdAt   DateTime @default(now())

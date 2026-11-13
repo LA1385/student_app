@@ -1,0 +1,2 @@
+ALTER TABLE "Reminder" ADD COLUMN "emailSentAt" DATETIME;
+ALTER TABLE "Reminder" ADD COLUMN "inAppSentAt" DATETIME;
