@@ -116,17 +116,19 @@ export const processDueReminders = async (): Promise<ReminderRunSummary> => {
                     summary.sent++;
                 }
             }
-            catch (error) {
-                console.error(`Failed to deliver reminder ${reminder.id}:`, error);
+            catch {
+                console.error("Failed to deliver reminder");
                 summary.failed++;
 
                 await prisma.reminder.update({
                     where: { id: reminder.id },
                     data: {
                         attempts: { increment: 1 },
-                        lastError: error instanceof Error ? error.message : String(error)
+                        lastError: "Reminder delivery failed"
                     }
-                }).catch(console.error);
+                }).catch(() => {
+                    console.error("Failed to record reminder delivery failure");
+                });
 
                 continue;
             }
@@ -138,9 +140,9 @@ export const processDueReminders = async (): Promise<ReminderRunSummary> => {
                     data: { sent: true, attempts: { increment: 1 } }
                 });
             }
-            catch (error) {
+            catch {
                 summary.unmarked++;
-                console.error(`Delivered but reminder ${reminder.id} was not marked as sent:`, error);
+                console.error("Delivered reminder was not marked as sent");
             }
         }
 

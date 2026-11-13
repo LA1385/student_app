@@ -13,7 +13,6 @@ export default async function TaskIdPage({ params }: { params: Promise<{ id: str
     }
     const { id: taskId } = await params;
     if (!taskId) {
-        console.error("Task ID is missing in the parameters.");
         return notFound();
     }
     const [reminders, task] = await Promise.all([
@@ -21,14 +20,8 @@ export default async function TaskIdPage({ params }: { params: Promise<{ id: str
         getTaskById(taskId, session.user.id),
     ]);
     if (!task) {
-        console.error(`Task with ID ${taskId} not found for user ${session.user.id}.`);
         return notFound();
     }
-    if (!reminders) {
-        console.error(`Reminders for task ID ${taskId} not found for user ${session.user.id}.`);
-    }
-    console.log("Fetched task:", task); // Debugging line to check the fetched task
-    console.log("Fetched reminders:", reminders); // Debugging line to check the fetched reminders
 
     return(
         <TaskIdClient task={task} reminders={reminders} />
