@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ConfirmationModal from "@/components/Tasks/ConfirmationModal";
+import {
+    getNetworkErrorMessage,
+    getResponseErrorMessage,
+} from "@/lib/clientError";
 
 type TaskActionProps = {
     taskId: string;
@@ -10,18 +14,20 @@ type TaskActionProps = {
     setStatus: (status: string) => void;
     isEditing: boolean;
     setIsEditing: (isEditing: boolean) => void;
-    handleSaveChanges: () => Promise<void>;
+    handleSaveChanges: () => Promise<string | null>;
 }
 
 export default function TaskAction({taskId, status, setStatus,isEditing, setIsEditing, handleSaveChanges}: TaskActionProps) {
 
     const [isDisabled, setIsDisabled] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [actionError, setActionError] = useState<string | null>(null);
 
     const router = useRouter();
 
     const handleMarkAsComplete = async () => {
     setIsDisabled(true);
+    setActionError(null);
     if (status === "Completed") {
         console.log("Task is already completed");
         setIsDisabled(false);
@@ -40,11 +46,20 @@ export default function TaskAction({taskId, status, setStatus,isEditing, setIsEd
             setStatus(updated.status);
             router.push("/dashboard/tasks");
             console.log("Task marked as complete");
+        } else if (response.status === 401) {
+            router.push("/login");
         } else {
-            console.error("Failed to mark task as complete");
+            const message = await getResponseErrorMessage(
+                response,
+                "Could not complete this task. Please try again.",
+            );
+            setActionError(message);
         }
     } catch (error) {
         console.error("Network error marking task complete:", error);
+        setActionError(
+            getNetworkErrorMessage("Could not complete this task. Please try again."),
+        );
     } finally {
         setIsDisabled(false);
     }
@@ -52,6 +67,7 @@ export default function TaskAction({taskId, status, setStatus,isEditing, setIsEd
 
     const handleDeleteTask = async () => {
         setIsDisabled(true);
+        setActionError(null);
         try {
             const response = await fetch(`/api/tasks/${taskId}`, {
                 method: "DELETE",
@@ -60,11 +76,20 @@ export default function TaskAction({taskId, status, setStatus,isEditing, setIsEd
             if (response.ok) {
                 console.log("Task deleted successfully");
                 router.push("/dashboard/tasks");
+            } else if (response.status === 401) {
+                router.push("/login");
             } else {
-                console.error("Failed to delete task");
+                const message = await getResponseErrorMessage(
+                    response,
+                    "Could not delete this task. Please try again.",
+                );
+                setActionError(message);
             }
         } catch (error) {
             console.error("Network error deleting task:", error);
+            setActionError(
+                getNetworkErrorMessage("Could not delete this task. Please try again."),
+            );
         } 
         finally {
             setIsDisabled(false);
@@ -73,6 +98,11 @@ export default function TaskAction({taskId, status, setStatus,isEditing, setIsEd
 
     return (
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
+            {actionError && (
+                <p role="alert" className="order-first w-full text-sm text-urgent">
+                    {actionError}
+                </p>
+            )}
             {!isEditing && <button disabled={isDisabled} className="order-1 min-h-12 rounded-xl border border-primary bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 sm:min-w-36" onClick={() => {
                 setIsEditing(true);
             }}>Edit Task</button>}
@@ -82,7 +112,7 @@ export default function TaskAction({taskId, status, setStatus,isEditing, setIsEd
             {isEditing ? (
                 <button disabled={isDisabled} className="order-2 min-h-12 rounded-xl border border-primary bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 sm:order-1 sm:min-w-40" onClick={async () => {
                     setIsDisabled(true);
-                    await handleSaveChanges();
+                    setActionError(await handleSaveChanges());
                     setIsDisabled(false);
                 }}>Save Changes</button>
             ) : (

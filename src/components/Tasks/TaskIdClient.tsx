@@ -4,10 +4,15 @@ import { Task, Reminder } from "@generated/prisma/client";
 import TaskActions from "@/components/Tasks/TaskAction";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import {
+  getNetworkErrorMessage,
+  getResponseErrorMessage,
+} from "@/lib/clientError";
 
 type TaskIdClientProps = {
   task: Task;
   reminders: Reminder | null;
+  reminderError?: string;
 };
 
 type TaskUpdatePayload = {
@@ -20,7 +25,7 @@ type TaskUpdatePayload = {
   reminderId?: string;
 };
 
-export default function TaskIdClient({ task, reminders }: TaskIdClientProps) {
+export default function TaskIdClient({ task, reminders, reminderError }: TaskIdClientProps) {
   const [status, setStatus] = useState(task?.status);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedType, setSelectedType] = useState(task?.type || "");
@@ -42,7 +47,7 @@ export default function TaskIdClient({ task, reminders }: TaskIdClientProps) {
   const CHANNEL_OPTIONS = ["Email", "In-app", "Both"];
   const DAYS_BEFORE_OPTIONS = [1, 3, 7];
 
-  const handleSaveChanges = async () => {
+  const handleSaveChanges = async (): Promise<string | null> => {
     const payLoad: TaskUpdatePayload = {};
 
     if (titleRef.current?.value !== task?.title) {
@@ -75,8 +80,7 @@ export default function TaskIdClient({ task, reminders }: TaskIdClientProps) {
     }
 
     if (payLoad.title === "") {
-      alert("Title cannot be empty");
-      return;
+      return "Title cannot be empty.";
     }
 
     try {
@@ -88,12 +92,23 @@ export default function TaskIdClient({ task, reminders }: TaskIdClientProps) {
 
       if (response.ok) {
         router.push("/dashboard/tasks");
+        return null;
+      }
+
+      if (response.status === 401) {
+        router.push("/login");
+        return null;
       } else {
-        const errorData = await response.json();
-        console.error("Failed to update task:", errorData);
+        return await getResponseErrorMessage(
+          response,
+          "Could not save your task changes. Please try again.",
+        );
       }
     } catch (error) {
       console.error("Error updating task:", error);
+      return getNetworkErrorMessage(
+        "Could not save your task changes. Please try again.",
+      );
     }
   };
 
