@@ -7,6 +7,10 @@ import Button from "@/components/Tasks/Button";
 import { Bell } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { buildDueDateTime } from "@/lib/utils";
+import {
+    getNetworkErrorMessage,
+    getResponseErrorMessage,
+} from "@/lib/clientError";
 
 // ---------- Types ----------
 
@@ -44,6 +48,7 @@ export default function NewTaskForm() {
     });
 
     const [errors, setErrors] = useState<FormErrors>({});
+    const [submissionError, setSubmissionError] = useState<string | null>(null);
 
     // ---------- Handlers ----------
 
@@ -82,6 +87,7 @@ export default function NewTaskForm() {
         };
 
         setIsDisabled(true);
+        setSubmissionError(null);
         try {
             const response = await fetch('/api/tasks', {
                 method: 'POST',
@@ -93,13 +99,21 @@ export default function NewTaskForm() {
 
             if (response.ok) {
                 router.push('/dashboard');
+            } else if (response.status === 401) {
+                router.push("/login");
             } else {
-                const errorData = await response.json();
-                console.error('Error creating task:', errorData);
-                alert('Failed to create task. Please try again.');
+                setSubmissionError(
+                    await getResponseErrorMessage(
+                        response,
+                        "Could not create this task. Please try again.",
+                    ),
+                );
             }
         } catch (error) {
             console.error('Error submitting task:', error);
+            setSubmissionError(
+                getNetworkErrorMessage("Could not create this task. Please try again."),
+            );
         } finally {
             setIsDisabled(false);
         }
@@ -297,6 +311,11 @@ export default function NewTaskForm() {
                 </div>
                 <hr className="mt-4"  />
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+                    {submissionError && (
+                        <p role="alert" className="text-sm text-urgent sm:mr-auto sm:self-center">
+                            {submissionError}
+                        </p>
+                    )}
                     <button
                         type="button"
                         onClick={() => router.back()}

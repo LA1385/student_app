@@ -5,6 +5,10 @@ import PriorityBadge from "./PriorityBadge";
 import { formatDueDate } from "@/lib/utils";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+    getNetworkErrorMessage,
+    getResponseErrorMessage,
+} from "@/lib/clientError";
 
 type TaskCardProps = {
     taskId: string;
@@ -24,6 +28,7 @@ export default function TaskCard({taskId, title, type, dueDate, priority, status
 
     const router = useRouter();
     const [isDisabled, setIsDisabled] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleMarkAsComplete = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -31,6 +36,7 @@ export default function TaskCard({taskId, title, type, dueDate, priority, status
 
         if (isCompleted) return;
         setIsDisabled(true);
+        setError(null);
 
         try {
             const response = await fetch(`/api/tasks/${taskId}`, {
@@ -45,12 +51,22 @@ export default function TaskCard({taskId, title, type, dueDate, priority, status
                 } else {
                     router.refresh();
                 }
+            } else if (response.status === 401) {
+                router.push("/login");
             } else {
-                console.error("Failed to mark task as complete");
-                setIsDisabled(false);
+                setError(
+                    await getResponseErrorMessage(
+                        response,
+                        "Could not complete this task. Please try again.",
+                    ),
+                );
             }
         } catch (error) {
             console.error("Network error marking task complete:", error);
+            setError(
+                getNetworkErrorMessage("Could not complete this task. Please try again."),
+            );
+        } finally {
             setIsDisabled(false);
         }
     };
@@ -99,6 +115,11 @@ export default function TaskCard({taskId, title, type, dueDate, priority, status
                     <Check className="h-4 w-4" />
                 </button>
             </div>
+            {error && (
+                <p role="alert" className="text-sm text-urgent">
+                    {error}
+                </p>
+            )}
         </div>
     );
 }
