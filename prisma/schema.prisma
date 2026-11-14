@@ -13,6 +13,7 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
+  timeZone      String    @default("Africa/Lagos")
   createdAt     DateTime  @default(now())
 
   accounts      Account[]

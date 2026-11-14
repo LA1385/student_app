@@ -4,6 +4,7 @@ import { getTaskById } from "@/lib/queries";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@generated/prisma/client";
 import { validateTaskUpdateInput } from "@/lib/validators/taskValidators";
+import { getReminderSchedule } from "@/lib/timeZone";
 
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }){
@@ -62,6 +63,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         // Determine the updated due date.
         // != null covers both null and undefined, so "no dueDate sent" means "no change".
         const newDueDate = update.dueDate != null ? new Date(update.dueDate) : existingTask.dueDate;
+        const userProfile = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { timeZone: true },
+        });
 
         const dueDateChanged = newDueDate.getTime() !== existingTask.dueDate.getTime();
 
@@ -99,11 +104,16 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
                 const newChannel = isTargetReminder ? update.channel ?? reminder.channel : reminder.channel;
 
-                const timingChanged = dueDateChanged || newDaysBefore !== reminder.daysBefore;
-
                 const channelChanged = newChannel !== reminder.channel;
+                const timingChanged = dueDateChanged || newDaysBefore !== reminder.daysBefore;
+                const reminderChanged = timingChanged || channelChanged;
 
-                if (!timingChanged && !channelChanged) continue;
+                if (!reminderChanged) continue;
+                const schedule = getReminderSchedule(
+                    newDueDate,
+                    newDaysBefore,
+                    userProfile?.timeZone ?? "Africa/Lagos",
+                );
                 // Update reminder settings.
                 await tx.reminder.update({
                     where: {
@@ -114,10 +124,13 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
                     data: {
                         channel: newChannel,
                         daysBefore: newDaysBefore,
-                        // Re-arm when the reminder timing changes.
-                        ...(timingChanged && {
-                            sent: false,
+                        // Re-arm when timing or channel settings change.
+                        ...(reminderChanged && {
+                            scheduledAt: schedule.scheduledAt,
+                            sent: !schedule.shouldArm,
                             attempts: 0,
+                            emailSentAt: null,
+                            inAppSentAt: null,
                             lastError: null,
                         }),
                     },

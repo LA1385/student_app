@@ -100,19 +100,62 @@ const escapeHtml = (text: string) =>
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
 
-const formatDate = (date: Date) =>
+const formatDate = (date: Date, timeZone: string) =>
     date.toLocaleString("en-NG", {
-        timeZone: "Africa/Lagos",
+        timeZone: normalizeTimeZone(timeZone),
         dateStyle: "full",
         timeStyle: "short",
     });
 
+// Strip newlines from the subject (email header injection) and cap its length.
 const formatSubject = (title: string) =>
     `Reminder: ${title.replace(/[\r\n]/g, " ").slice(0, 200)}`;
 
+// The element type of the array findDueReminders returns, derived from the
+// query itself so the two can never drift apart.
+type DueReminder = Awaited<ReturnType<typeof findDueReminders>>[number];
+type ReminderErrorCode = "SMTP_TIMEOUT" | "SMTP_AUTH" | "DB_WRITE_FAILED" | "UNKNOWN";
+
+const getEmailErrorCode = (error: unknown): ReminderErrorCode =>
+    error instanceof EmailDeliveryError ? error.code : "UNKNOWN";
+
+/**
+ * Creates the in-app notification for a reminder, at most once.
+ * Notification.reminderId is unique, so upsert makes this safe to call twice.
+ * If two runs collide, the database rejects the second insert (P2002). That
+ * means "someone already created it", so we treat it as success.
+ */
+const createNotification = async (reminder: DueReminder, message: string) => {
+    try {
+        await prisma.notification.upsert({
+            where: { reminderId: reminder.id },
+            update: {},
+            create: {
+                userId: reminder.user.id,
+                taskId: reminder.task.id,
+                reminderId: reminder.id,
+                message,
+            },
+        });
+    } catch (error) {
+        // Only swallow the duplicate case, and only if the row really exists.
+        if (
+            error instanceof Prisma.PrismaClientKnownRequestError
+            && error.code === "P2002"
+            && await prisma.notification.findUnique({
+                where: { reminderId: reminder.id },
+                select: { id: true },
+            })
+        ) {
+            return;
+        }
+        throw error;
+    }
+};
+
 export const processDueReminders = async (): Promise<ReminderRunSummary> => {
-    // Overlap guard: if a run is still going, don't start another
     if (isRunning) {
+        // Safe to log: contains no user data.
         console.log("Previous reminder run still in progress, skipping");
         return { ran: false, found: 0, sent: 0, notified: 0, failed: 0, skipped: 0, unmarked: 0 };
     }

@@ -970,6 +970,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  timeZone: 'timeZone',
   createdAt: 'createdAt'
 } as const
 
@@ -1037,6 +1038,8 @@ export const ReminderScalarFieldEnum = {
   channel: 'channel',
   sent: 'sent',
   attempts: 'attempts',
+  emailSentAt: 'emailSentAt',
+  inAppSentAt: 'inAppSentAt',
   lastError: 'lastError',
   scheduledAt: 'scheduledAt',
   createdAt: 'createdAt'
