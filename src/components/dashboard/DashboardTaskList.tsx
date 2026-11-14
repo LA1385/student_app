@@ -2,13 +2,15 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Task } from "@generated/prisma/client";
 import TaskCard from "@/components/dashboard/TaskCard";
+import EmptyStateCard from "@/components/Tasks/EmptyStateCard";
 
 type DashboardTaskListProps = {
     tasks: Task[];
     now: Date;
+    error?: string;
 };
 
-export default function DashboardTaskList({ tasks, now }: DashboardTaskListProps) {
+export default function DashboardTaskList({ tasks, now, error }: DashboardTaskListProps) {
     return (
         <div>
             <div className="flex items-center justify-between mb-4">

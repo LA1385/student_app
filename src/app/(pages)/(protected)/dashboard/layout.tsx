@@ -15,9 +15,12 @@ export default async function ProtectedLayout({
         redirect("/");
     }
 
-    const unreadNotificationCount = user?.id
-        ? await getUnreadNotificationCount(user.id)
-        : 0;
+    let unreadNotificationCount = 0;
+    try {
+        unreadNotificationCount = await getUnreadNotificationCount(user.id);
+    } catch (error) {
+        console.error("Error fetching unread notification count:", error);
+    }
 
         return (
             <div className="min-h-screen bg-bg-page text-text">

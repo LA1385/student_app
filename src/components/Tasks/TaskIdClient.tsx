@@ -249,6 +249,14 @@ export default function TaskIdClient({ task, reminders }: TaskIdClientProps) {
               Active
             </span>
           </div>
+          {reminderError ? (
+            <div
+              role="alert"
+              className="mt-6 rounded-xl border border-urgent/40 bg-urgent/10 px-4 py-4 text-sm text-urgent"
+            >
+              {reminderError}
+            </div>
+          ) : (
           <div className="mt-6 space-y-6">
             <div>
               <h1 className="text-xs font-semibold uppercase tracking-[0.14em] text-text-secondary">
@@ -307,6 +315,7 @@ export default function TaskIdClient({ task, reminders }: TaskIdClientProps) {
               )}
             </div>
           </div>
+          )}
         </section>
       </div>
 
