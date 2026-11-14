@@ -18,10 +18,14 @@ export const startReminderScheduler = () => {
             const summary = await processDueReminders();
 
             if (summary.found > 0 || !summary.ran) {
-                console.log("[cron] Reminder run:", summary);
+                console.log("[cron] Reminder run completed", {
+                    ran: summary.ran,
+                    due: summary.found,
+                    failed: summary.failed,
+                });
             }
-        } catch (error) {
-            console.error("[cron] Reminder run failed:", error);
+        } catch {
+            console.error("[cron] Reminder run failed: UNKNOWN");
         }
     })
 

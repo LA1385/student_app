@@ -2,11 +2,20 @@ import nodemailer, { type Transporter } from "nodemailer";
 
 let transporter: Transporter | null = null;
 
+export type EmailErrorCode = "SMTP_TIMEOUT" | "SMTP_AUTH" | "UNKNOWN";
+
+export class EmailDeliveryError extends Error {
+  constructor(public readonly code: EmailErrorCode) {
+    super(code);
+    this.name = "EmailDeliveryError";
+  }
+}
+
 function getTransporter(): Transporter {
   const { GMAIL_USER, GMAIL_APP_PASSWORD } = process.env;
 
   if (!GMAIL_USER || !GMAIL_APP_PASSWORD) {
-    throw new Error("GMAIL_USER and GMAIL_APP_PASSWORD must be configured.");
+    throw new EmailDeliveryError("SMTP_AUTH");
   }
 
   if (!transporter) {
@@ -37,11 +46,21 @@ export async function sendEmail(
       html,
     });
   } catch (error) {
-    const reason = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to send email: ${reason}`, { cause: error });
+    const code = error instanceof Error && (
+      error.name === "ETIMEDOUT"
+      || error.name === "ESOCKET"
+      || "code" in error && (error.code === "ETIMEDOUT" || error.code === "ESOCKET")
+    )
+      ? "SMTP_TIMEOUT"
+      : error instanceof Error && (
+        "code" in error && (error.code === "EAUTH" || error.code === "EENVELOPE")
+      )
+        ? "SMTP_AUTH"
+        : "UNKNOWN";
+    throw new EmailDeliveryError(code);
   }
 
   if (info.rejected.length > 0) {
-    throw new Error(`Email rejected for: ${info.rejected.join(", ")}`);
+    throw new EmailDeliveryError("SMTP_AUTH");
   }
 }

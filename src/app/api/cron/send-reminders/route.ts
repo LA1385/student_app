@@ -44,8 +44,8 @@ export async function POST(request: Request) {
         const summary = await processDueReminders();
 
         return NextResponse.json(summary, { status: 200 });
-    } catch (error) {
-        console.error("[cron] unexpected failure:", error);
+    } catch {
+        console.error("[cron] unexpected failure: UNKNOWN");
 
         return NextResponse.json(
             { error: "Internal error" },
