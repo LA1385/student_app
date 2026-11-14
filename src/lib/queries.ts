@@ -11,40 +11,36 @@ export async function getTasks(userId: string) {
 };
 
 export async function getTaskSummary(userId: string) {
-    try {
-        const now = new Date();
-        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const endOfToday = new Date(startOfToday.getTime() + 24*60*60*1000 - 1);
-        const sevenDaysLater = new Date(now.getTime() + 7*24*60*60*1000);
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const endOfToday = new Date(startOfToday.getTime() + 24*60*60*1000 - 1);
+    const sevenDaysLater = new Date(now.getTime() + 7*24*60*60*1000);
 
-        const dueTodayResult = await prisma.$queryRaw<{count: number}[]>`
+    const [dueTodayResult, dueThisWeekResult, completed] = await Promise.all([
+        prisma.$queryRaw<{count: number}[]>`
             SELECT COUNT(*) as count FROM Task 
             WHERE userId = ${userId} 
             AND dueDate >= ${startOfToday.toISOString()} 
             AND dueDate <= ${endOfToday.toISOString()}
             AND status != 'Completed'
-        `;
-        const dueToday = Number(dueTodayResult[0].count);
-
-        const dueThisWeekResult = await prisma.$queryRaw<{count: number}[]>`
+        `,
+        prisma.$queryRaw<{count: number}[]>`
             SELECT COUNT(*) as count FROM Task 
             WHERE userId = ${userId} 
             AND dueDate >= ${startOfToday.toISOString()} 
             AND dueDate <= ${sevenDaysLater.toISOString()}
             AND status != 'Completed'
-        `;
-        const dueThisWeek = Number(dueThisWeekResult[0].count);
-
-        const completed = await prisma.task.count({
+        `,
+        prisma.task.count({
             where: { userId, status: "Completed" }
-        });
+        }),
+    ]);
 
-        return { dueToday, dueThisWeek, completed };
-
-    } catch {
-        console.error("Error fetching task summary");
-        return null;
-    }
+    return {
+        dueToday: Number(dueTodayResult[0].count),
+        dueThisWeek: Number(dueThisWeekResult[0].count),
+        completed,
+    };
 }
 
 export async function createTask(userId: string, data: TaskInput){
