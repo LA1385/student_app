@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { TaskInput } from '@/lib/validators/taskValidators';
+import { getReminderSchedule } from '@/lib/timeZone';
 
 // Full task list for a user
 export async function getTasks(userId: string) {
@@ -48,11 +49,21 @@ export async function getTaskSummary(userId: string) {
 
 export async function createTask(userId: string, data: TaskInput){
     const { title, type, dueDate, priority, category, daysBefore, channel } = data;
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { timeZone: true },
+    });
+    const dueDateValue = new Date(dueDate);
+    const reminderSchedule = getReminderSchedule(
+        dueDateValue,
+        daysBefore,
+        user?.timeZone ?? "Africa/Lagos",
+    );
     return await prisma.task.create({
         data: {
             title,
             type,
-            dueDate: new Date(dueDate),
+            dueDate: dueDateValue,
             priority,
             category,
             userId,
@@ -61,7 +72,8 @@ export async function createTask(userId: string, data: TaskInput){
                     daysBefore,
                     userId,
                     channel,
-                    scheduledAt: new Date(new Date(dueDate).getTime() - daysBefore * 24 * 60 * 60 * 1000)
+                    scheduledAt: reminderSchedule.scheduledAt,
+                    sent: !reminderSchedule.shouldArm,
                 }
             }
             
