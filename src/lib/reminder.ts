@@ -24,8 +24,9 @@
 
 import { prisma } from '@/lib/prisma';
 import { MAX_ATTEMPTS } from '@/lib/constant';
-import { sendEmail } from './email';
+import { EmailDeliveryError, sendEmail } from './email';
 import { Prisma } from '@generated/prisma/client';
+import { normalizeTimeZone } from './timeZone';
 
 // How many reminders one run will pick up. Leftovers are picked up by the
 // next run, because the query is "due and not sent".
@@ -78,7 +79,7 @@ const findDueReminders = (now: Date) => {
                 select: { id: true, title: true, type: true, dueDate: true }
             },
             user: {
-                select: { id: true, email: true }
+                select: { id: true, email: true, timeZone: true }
             }
         },
     });
@@ -106,50 +107,12 @@ const formatDate = (date: Date) =>
         timeStyle: "short",
     });
 
-// Strip newlines from the subject (email header injection) and cap its length.
 const formatSubject = (title: string) =>
     `Reminder: ${title.replace(/[\r\n]/g, " ").slice(0, 200)}`;
 
-// The element type of the array findDueReminders returns, derived from the
-// query itself so the two can never drift apart.
-type DueReminder = Awaited<ReturnType<typeof findDueReminders>>[number];
-/**
- * Creates the in-app notification for a reminder, at most once.
- * Notification.reminderId is unique, so upsert makes this safe to call twice.
- * If two runs collide, the database rejects the second insert (P2002). That
- * means "someone already created it", so we treat it as success.
- */
-const createNotification = async (reminder: DueReminder, message: string) => {
-    try {
-        await prisma.notification.upsert({
-            where: { reminderId: reminder.id },
-            update: {},
-            create: {
-                userId: reminder.user.id,
-                taskId: reminder.task.id,
-                reminderId: reminder.id,
-                message,
-            },
-        });
-    } catch (error) {
-        // Only swallow the duplicate case, and only if the row really exists.
-        if (
-            error instanceof Prisma.PrismaClientKnownRequestError
-            && error.code === "P2002"
-            && await prisma.notification.findUnique({
-                where: { reminderId: reminder.id },
-                select: { id: true },
-            })
-        ) {
-            return;
-        }
-        throw error;
-    }
-};
-
 export const processDueReminders = async (): Promise<ReminderRunSummary> => {
+    // Overlap guard: if a run is still going, don't start another
     if (isRunning) {
-        // Safe to log: contains no user data.
         console.log("Previous reminder run still in progress, skipping");
         return { ran: false, found: 0, sent: 0, notified: 0, failed: 0, skipped: 0, unmarked: 0 };
     }
@@ -159,172 +122,83 @@ export const processDueReminders = async (): Promise<ReminderRunSummary> => {
         ran: true, found: 0, sent: 0, notified: 0, failed: 0, skipped: 0, unmarked: 0,
     };
 
-    // The try/finally guarantees the flag is released even if something throws,
-    // otherwise every later run would be skipped until a restart.
     try {
         const now = new Date();
         const reminders = await findDueReminders(now);
         summary.found = reminders.length;
 
-        // Work out how much of today's email budget is left by counting emails
-        // recorded in the last 24 hours. We then track usage in memory for the
-        // rest of this run so we do not query the database per reminder.
-        const emailCutoff = new Date(now.getTime() - EMAIL_BUDGET_WINDOW_MS);
-        const sentEmailCount = await prisma.reminder.count({
-            where: { emailSentAt: { gte: emailCutoff } },
-        });
-        let emailBudgetUsed = sentEmailCount;
-
-        /**
-         * Delivers one reminder. Order of work:
-         *   in-app first (cheap, does not depend on SMTP), then email,
-         *   then mark the reminder finished if every channel is done.
-         * If anything failed, the attempt counter goes up once at the end.
-         */
-        const processReminder = async (reminder: DueReminder) => {
+        for (const reminder of reminders) {
             const wantsEmail = reminder.channel === "Email" || reminder.channel === "Both";
             const wantsInApp = reminder.channel === "In-app" || reminder.channel === "Both";
 
-            // Unknown channel value: nothing to deliver.
             if (!wantsEmail && !wantsInApp) {
                 summary.skipped++;
-                return;
+                continue;
             }
 
-            // Re-check the task right before sending. The student may have
-            // completed it (or deleted it) after the list was loaded, so this
-            // shrinks the window for sending a pointless reminder.
-            const task = await prisma.task.findFirst({
-                where: { id: reminder.task.id, status: { not: "Completed" } },
-                select: { id: true },
-            });
-            if (!task) {
-                summary.skipped++;
-                return;
-            }
-
+            // Plain text. Escaped separately for the email only.
             const message = `Your task "${reminder.task.title}" is due on ${formatDate(reminder.task.dueDate)}.`;
 
-            // A channel counts as complete if it was not requested, or if an
-            // earlier run already finished it. This is what makes retries
-            // repeat only the channel that failed.
-            let inAppComplete = !wantsInApp || reminder.inAppSentAt !== null;
-            let emailComplete = !wantsEmail || reminder.emailSentAt !== null;
-            let failed = false;
-
-            // --- In-app channel ---
-            if (wantsInApp && !inAppComplete) {
-                try {
-                    await createNotification(reminder, message);
-                    await prisma.reminder.update({
-                        where: { id: reminder.id },
-                        data: { inAppSentAt: new Date() },
+            // Step 1: deliver. Notification first; if it throws, the email is skipped this run.
+            try {
+                if (wantsInApp) {
+                    await prisma.notification.upsert({
+                        where: { reminderId: reminder.id },
+                        update: {},
+                        create: {
+                            userId: reminder.user.id,
+                            taskId: reminder.task.id,
+                            reminderId: reminder.id,
+                            message,
+                        },
                     });
-                    inAppComplete = true;
                     summary.notified++;
-                } catch {
-                    failed = true;
-                    summary.failed++;
+                }
+
+                if (wantsEmail) {
+                    if (!reminder.user.email) throw new Error("User has no email");
+
+                    await sendEmail(
+                        reminder.user.email,
+                        formatSubject(reminder.task.title),
+                        `<p>${escapeHtml(message)}</p>`
+                    );
+                    summary.sent++;
                 }
             }
+            catch {
+                console.error("Failed to deliver reminder");
+                summary.failed++;
 
-            // --- Email channel ---
-            if (wantsEmail && !emailComplete) {
-                if (emailBudgetUsed >= EMAIL_BUDGET) {
-                    // Budget used up: leave the email undone. It stays eligible
-                    // and is retried on a later run once the 24h window moves on.
-                    summary.skipped++;
-                } else {
-                    // Reserve one unit of budget before sending. This is safe
-                    // across the concurrent workers because the increment runs
-                    // synchronously, before any await.
-                    emailBudgetUsed++;
-                    try {
-                        if (!reminder.user.email) throw new Error("Missing email");
-
-                        await sendEmail(
-                            reminder.user.email,
-                            formatSubject(reminder.task.title),
-                            `<p>${escapeHtml(message)}</p>`
-                        );
-                        // Record success immediately so a later retry does not
-                        // send this email again.
-                        await prisma.reminder.update({
-                            where: { id: reminder.id },
-                            data: { emailSentAt: new Date() },
-                        });
-                        emailComplete = true;
-                        summary.sent++;
-                    } catch {
-                        // Give the reserved budget back: this send failed.
-                        emailBudgetUsed--;
-                        failed = true;
-                        summary.failed++;
-                    }
-                }
-            }
-
-            // --- Finish ---
-            // Only when every requested channel is done do we mark the whole
-            // reminder as sent, which removes it from future queries.
-            if (inAppComplete && emailComplete) {
-                try {
-                    await prisma.reminder.update({
-                        where: { id: reminder.id },
-                        data: { sent: true },
-                    });
-                } catch {
-                    // Delivery worked but the bookkeeping write failed. The
-                    // per-channel timestamps are already saved, so the next run
-                    // will only retry this write, not re-send anything.
-                    summary.unmarked++;
-                    failed = true;
-                }
-            }
-
-            // Count one attempt per run if anything went wrong. After
-            // MAX_ATTEMPTS the reminder drops out of findDueReminders.
-            if (failed) {
                 await prisma.reminder.update({
                     where: { id: reminder.id },
                     data: {
                         attempts: { increment: 1 },
-                        lastError: "Reminder delivery failed",
-                    },
+                        lastError: "Reminder delivery failed"
+                    }
                 }).catch(() => {
-                    summary.unmarked++;
+                    console.error("Failed to record reminder delivery failure");
+                });
+
+                continue;
+            }
+
+            // Step 2: every requested channel succeeded, so mark as sent.
+            try {
+                await prisma.reminder.update({
+                    where: { id: reminder.id },
+                    data: { sent: true, attempts: { increment: 1 } }
                 });
             }
-        };
-
-        // Small worker pool: CONCURRENCY workers pull the next reminder from a
-        // shared index until the list is exhausted. `nextIndex++` is safe here
-        // because JavaScript runs one piece of code at a time between awaits.
-        let nextIndex = 0;
-        const worker = async () => {
-            while (nextIndex < reminders.length) {
-                const index = nextIndex++;
-                try {
-                    await processReminder(reminders[index]);
-                } catch {
-                    // Last line of defence. processReminder handles its own
-                    // delivery errors, so this catches unexpected failures
-                    // (for example the task lookup throwing). One bad reminder
-                    // must not stop the rest of the batch.
-                    summary.failed++;
-                }
+            catch {
+                summary.unmarked++;
+                console.error("Delivered reminder was not marked as sent");
             }
-        };
-
-        await Promise.all(
-            Array.from(
-                { length: Math.min(CONCURRENCY, reminders.length) },
-                () => worker()
-            )
-        );
+        }
 
         return summary;
-    } finally {
+    }
+    finally {
         isRunning = false;
     }
 };
