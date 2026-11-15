@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { TaskInput } from '@/lib/validators/taskValidators';
 import { getReminderSchedule } from '@/lib/timeZone';
+import { FeedbackInput } from '@/lib/validators/feedbackValidators';
 
 // Full task list for a user
 export async function getTasks(userId: string) {
@@ -16,31 +17,27 @@ export async function getTaskSummary(userId: string) {
     const endOfToday = new Date(startOfToday.getTime() + 24*60*60*1000 - 1);
     const sevenDaysLater = new Date(now.getTime() + 7*24*60*60*1000);
 
-    const [dueTodayResult, dueThisWeekResult, completed] = await Promise.all([
-        prisma.$queryRaw<{count: number}[]>`
-            SELECT COUNT(*) as count FROM Task 
-            WHERE userId = ${userId} 
-            AND dueDate >= ${startOfToday.toISOString()} 
-            AND dueDate <= ${endOfToday.toISOString()}
-            AND status != 'Completed'
-        `,
-        prisma.$queryRaw<{count: number}[]>`
-            SELECT COUNT(*) as count FROM Task 
-            WHERE userId = ${userId} 
-            AND dueDate >= ${startOfToday.toISOString()} 
-            AND dueDate <= ${sevenDaysLater.toISOString()}
-            AND status != 'Completed'
-        `,
-        prisma.task.count({
-            where: { userId, status: "Completed" }
-        }),
-    ]);
+    const [dueToday, dueThisWeek, completed] = await Promise.all([
+    prisma.task.count({
+        where: {
+            userId,
+            status: { not: "Completed" },
+            dueDate: { gte: startOfToday, lte: endOfToday },
+        },
+    }),
+    prisma.task.count({
+        where: {
+            userId,
+            status: { not: "Completed" },
+            dueDate: { gte: startOfToday, lte: sevenDaysLater },
+        },
+    }),
+    prisma.task.count({
+        where: { userId, status: "Completed" },
+    }),
+]);
 
-    return {
-        dueToday: Number(dueTodayResult[0].count),
-        dueThisWeek: Number(dueThisWeekResult[0].count),
-        completed,
-    };
+return { dueToday, dueThisWeek, completed };
 }
 
 export async function createTask(userId: string, data: TaskInput){
@@ -87,4 +84,25 @@ export async function getTaskReminders(taskId: string, userId: string) {
     return await prisma.reminder.findFirst({
         where: {  taskId, userId },
     })
+}
+
+export async function createFeedback(userId: string, data: FeedbackInput) {
+    return await prisma.feedback.create({
+        data: {
+            userId,
+            category: data.category,
+            message: data.message,
+        },
+    });
+}
+
+export async function countRecentFeedbackByUser(userId: string) {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+
+    return await prisma.feedback.count({
+        where: {
+            userId,
+            createdAt: { gte: oneHourAgo },
+        },
+    });
 }

@@ -52,3 +52,8 @@ export type Reminder = Prisma.ReminderModel
  * 
  */
 export type Notification = Prisma.NotificationModel
+/**
+ * Model Feedback
+ * 
+ */
+export type Feedback = Prisma.FeedbackModel

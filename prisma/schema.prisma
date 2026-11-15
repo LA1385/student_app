@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model User {
@@ -21,6 +21,7 @@ model User {
   tasks         Task[]
   reminders     Reminder[]
   notifications Notification[]
+  feedback      Feedback[]
 }
 
 model Account {
@@ -40,6 +41,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -49,6 +51,8 @@ model Session {
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model VerificationToken {
@@ -74,25 +78,31 @@ model Task {
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   reminders     Reminder[]
   notifications Notification[]
+
+  @@index([userId, dueDate])
 }
 
 model Reminder {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   taskId      String
   userId      String
   daysBefore  Int
   channel     String
-  sent        Boolean  @default(false)
-  attempts    Int      @default(0)
+  sent        Boolean   @default(false)
+  attempts    Int       @default(0)
   emailSentAt DateTime?
   inAppSentAt DateTime?
   lastError   String?
   scheduledAt DateTime
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 
   task         Task          @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   notification Notification?
+
+  @@index([sent, scheduledAt])
+  @@index([taskId])
+  @@index([userId])
 }
 
 model Notification {
@@ -109,4 +119,17 @@ model Notification {
   reminder Reminder @relation(fields: [reminderId], references: [id], onDelete: Cascade)
 
   @@index([userId, read, createdAt])
+  @@index([taskId])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String
+  category  String
+  message   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }

@@ -1,1 +1,0 @@
-ALTER TABLE "User" ADD COLUMN "timeZone" TEXT NOT NULL DEFAULT 'Africa/Lagos';

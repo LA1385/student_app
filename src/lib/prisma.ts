@@ -1,10 +1,10 @@
 import "dotenv/config";
 import { PrismaClient } from "../../generated/prisma/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 const globalForPrisma = globalThis as unknown as {
     prisma: PrismaClient | undefined;
-    prismaAdapter: PrismaLibSql | undefined;
+    prismaAdapter: PrismaPg | undefined;
 };
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -16,8 +16,8 @@ if (!databaseUrl) {
 
 const adapter =
     globalForPrisma.prismaAdapter ??
-    new PrismaLibSql({
-        url: databaseUrl,
+    new PrismaPg({
+        connectionString: databaseUrl,
     });
 
 export const prisma =
