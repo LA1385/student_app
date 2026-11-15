@@ -1,6 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { ChevronDown, LogOut } from "lucide-react";
+import { ChevronDown, LogOut, MessageSquare } from "lucide-react";
 import { signOut } from "next-auth/react";
 import {
     DropdownMenu,
@@ -11,10 +11,12 @@ import {
     DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { useEffect, useState } from "react";
+import FeedbackModal from "@/components/dashboard/FeedbackModal";
 
 export default function ProfilePill() {
     const { data: session } = useSession();
     const [isVisible, setIsVisible] = useState(false);
+    const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
     useEffect(() => {
         const hasSeen = localStorage.getItem("has seen profile tip");
@@ -56,9 +58,16 @@ export default function ProfilePill() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
+                        onClick={() => setIsFeedbackOpen(true)}
+                        className="flex min-h-11 items-center gap-2 cursor-pointer"
+                    >
+                        <MessageSquare className="w-4 h-4" />
+                        <span>Send feedback</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
                         variant="destructive"
                         onClick={() => signOut({ callbackUrl: "/" })}
-                        className="flex items-center gap-2 cursor-pointer"
+                        className="flex min-h-11 items-center gap-2 cursor-pointer"
                     >
                         <LogOut className="w-4 h-4" />
                         <span>Sign Out</span>
@@ -69,9 +78,13 @@ export default function ProfilePill() {
                 <div className="absolute top-14 right-0 bg-upcoming text-white text-xs font-medium px-3 py-2 rounded-lg shadow-md z-50 w-[180px] animate-bounce-subtle">
                     {/* Rotated triangle helper */}
                     <div className="absolute -top-1 right-6 w-2.5 h-2.5 bg-upcoming rotate-45"></div>
-                    Your profile information and sign out is here
+                    Your profile information, feedback, and sign out are here
                 </div>
             )}
+            <FeedbackModal
+                isOpen={isFeedbackOpen}
+                onClose={() => setIsFeedbackOpen(false)}
+            />
         </div>    
     );
 }
