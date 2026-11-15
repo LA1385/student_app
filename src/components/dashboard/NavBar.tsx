@@ -2,6 +2,7 @@ import ProfilePill from "@/components/dashboard/ProfilePill";
 import ThemeToggle from "@/components/shared/ThemeToggle";
 import { Bell } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function NavBar({
     unreadNotificationCount,
@@ -15,8 +16,10 @@ export default function NavBar({
         <nav className="fixed top-0 left-0 right-0 z-50 h-14 px-4 md:px-6 bg-bg-card border-b border-border flex items-center justify-between">
             {/* App Name & Logo */}
             <div className="flex items-center gap-2">
-                <img 
+                <Image
                     src="/logo.png" 
+                    width={28}
+                    height={28}
                     alt="Logo" 
                     className="w-7 h-7 rounded-md object-contain"
                 />

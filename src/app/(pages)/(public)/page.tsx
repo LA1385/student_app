@@ -2,6 +2,7 @@ import Card from "@/components/landing/Card";
 import SignInBtn from "@/components/shared/SignInBtn";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 
 
 export default async function Home() {
@@ -56,24 +57,25 @@ export default async function Home() {
                     </div>
 
                     {/* App Screenshot */}
-                    <div className="lg:col-span-7 w-full h-[350px] md:h-[500px] lg:h-[600px] rounded-[2rem] bg-[#0F172A] shadow-2xl overflow-hidden relative border border-[#1E293B] shadow-primary/10 ml-0 lg:ml-8 mt-8 lg:mt-0">
-                        <div className="absolute top-0 w-full h-12 bg-[#0B0F19] border-b border-[#1E293B] flex items-center px-6 gap-2">
-                            <div className="w-3 h-3 rounded-full bg-[#EF4444]"></div>
-                            <div className="w-3 h-3 rounded-full bg-[#F59E0B]"></div>
-                            <div className="w-3 h-3 rounded-full bg-[#10B981]"></div>
-                        </div>
-                        <div className="mt-12 p-8 flex flex-col gap-6 h-full bg-[#0F172A]">
-                            <div className="w-1/4 h-8 bg-[#1E293B] rounded-lg mb-2"></div>
-                            <div className="w-full h-24 bg-[#1E293B] rounded-xl"></div>
-                            <div className="flex gap-6 h-full pb-8">
-                                <div className="flex-1 h-full bg-[#1E293B] rounded-xl relative overflow-hidden">
-                                     <div className="absolute top-0 w-full h-1/2 bg-gradient-to-b from-white/5 to-transparent"></div>
-                                </div>
-                                <div className="flex-1 h-full bg-[#1E293B] rounded-xl relative overflow-hidden">
-                                     <div className="absolute top-0 w-full h-1/2 bg-gradient-to-b from-white/5 to-transparent"></div>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="lg:col-span-7 w-full ml-0 lg:ml-8 mt-8 lg:mt-0">
+                        <Image
+                            src="/lightmode.png"
+                            alt="Scholarly task dashboard in light mode"
+                            width={268}
+                            height={611}
+                            sizes="(max-width: 1023px) 100vw, 58vw"
+                            loading="lazy"
+                            className="h-auto w-full max-w-full object-contain dark:hidden"
+                        />
+                        <Image
+                            src="/darkmode.png"
+                            alt="Scholarly task dashboard in dark mode"
+                            width={1366}
+                            height={768}
+                            sizes="(max-width: 1023px) 100vw, 58vw"
+                            loading="lazy"
+                            className="hidden h-auto w-full max-w-full object-contain dark:block"
+                        />
                     </div>
                 </div>
             </div>

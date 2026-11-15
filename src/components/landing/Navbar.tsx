@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import SignInBtn from "@/components/shared/SignInBtn";
 import ThemeToggle from "@/components/shared/ThemeToggle";
 
@@ -9,7 +10,13 @@ export default function Navbar() {
                 {/* App logo & name */}
                 <Link href="/" className="flex flex-row items-center gap-x-2.5 group">
                     <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold group-hover:bg-primary-hover transition-colors shadow-sm shadow-primary/20">
-                        <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
+                        <Image
+                            src="/logo.png"
+                            width={32}
+                            height={42}
+                            alt="Logo"
+                            className="w-full h-full object-contain"
+                        />
                     </div>
                     <div className="text-[1.35rem] font-extrabold tracking-tight text-text">   
                         Scholarly

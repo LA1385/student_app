@@ -63,7 +63,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
 
       {/* Search Bar and Filter Chips */}
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div className="order-1 rounded-2xl border border-border bg-bg-card p-3 sm:p-4 md:order-none">
+        <div className="order-1 p-3 sm:p-4 md:order-none">
           <div className="flex flex-wrap gap-2">
             <FilterChip
               value="All"
@@ -92,7 +92,7 @@ export default function TaskPageClient({ tasks, now }: TaskPageClientProps) {
           </div>
         </div>
 
-        <div className="order-2 w-full rounded-2xl border border-border bg-bg-card p-3 sm:p-4 md:order-none md:max-w-sm lg:max-w-md">
+        <div className="order-2 w-full rounded-2xl border p-3 sm:p-4 md:order-none md:max-w-sm lg:max-w-md">
           <SearchBar
             type="text"
             searchValue={searchText}

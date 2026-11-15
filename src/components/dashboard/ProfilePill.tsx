@@ -2,7 +2,6 @@
 import { useSession } from "next-auth/react";
 import { ChevronDown, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
-import  Image  from "next/image";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
