@@ -4,6 +4,7 @@ import { Task, Reminder } from "@generated/prisma/client";
 import TaskActions from "@/components/Tasks/TaskAction";
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import {
   getNetworkErrorMessage,
   getResponseErrorMessage,
@@ -112,8 +113,28 @@ export default function TaskIdClient({ task, reminders, reminderError }: TaskIdC
     }
   };
 
+  const handleBack = () => {
+    const cameFromApp =
+      document.referrer.startsWith(window.location.origin) &&
+      window.history.length > 1;
+
+    if (cameFromApp) {
+      router.back();
+    } else {
+      router.push("/dashboard/tasks");
+    }
+  };
+
   return (
     <div className="mx-auto w-full max-w-6xl pb-8 pt-6 sm:pb-10 sm:pt-8 lg:pl-4 lg:pt-10">
+      <button
+        type="button"
+        onClick={handleBack}
+        aria-label="Back to tasks"
+        className="mb-4 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-text-muted transition-colors hover:bg-bg-input hover:text-text focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+      >
+        <ArrowLeft className="h-5 w-5" aria-hidden="true" />
+      </button>
       <header className="mb-6 flex items-start justify-between gap-4 sm:mb-8">
         <div className="min-w-0">
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">

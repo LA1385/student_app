@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Input from "@/components/Tasks/Input";
 import Button from "@/components/Tasks/Button";
-import { Bell } from "lucide-react";
+import { ArrowLeft, Bell } from "lucide-react";
 import { Loader2 } from "lucide-react";
 import { buildDueDateTime } from "@/lib/utils";
 import {
@@ -119,11 +119,31 @@ export default function NewTaskForm() {
         }
     };
 
+    const handleBack = () => {
+        const cameFromApp =
+            document.referrer.startsWith(window.location.origin) &&
+            window.history.length > 1;
+
+        if (cameFromApp) {
+            router.back();
+        } else {
+            router.push("/dashboard/tasks");
+        }
+    };
+
     // ---------- Render ----------
 
     return (
         <div className="py-4 md:py-6">
             <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+                <button
+                    type="button"
+                    onClick={handleBack}
+                    aria-label="Back to tasks"
+                    className="mb-4 inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 text-text-muted transition-colors hover:bg-bg-input hover:text-text focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+                >
+                    <ArrowLeft className="h-5 w-5" aria-hidden="true" />
+                </button>
                 <div className="mb-8 space-y-2">
                     <p className="text-sm font-semibold uppercase tracking-[0.3em] text-text-secondary">Tasks / New Task</p>
                     <h1 className="text-3xl font-bold text-text sm:text-4xl">Create New Task</h1>
@@ -238,7 +258,7 @@ export default function NewTaskForm() {
                             </div>
                         </div>
 
-                        <div className="mt-6 space-y-6 rounded-3xl border-l-4 border-primary/75 bg-bg-card p-5 sm:p-6">
+                        <div className="mt-6 space-y-6 rounded-3xl  bg-bg-card p-5 sm:p-6">
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between gap-4">
                                     <h3 className="text-sm font-semibold text-text">Remind me</h3>
